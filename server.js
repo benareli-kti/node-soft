@@ -12,6 +12,11 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use((req, res, next)=>{
+  res.header('Access-Control-Allow-Origin', '*');
+  next();
+})
+
 const db = require("./app/models");
 const Role = db.role;
 const Warehouse = db.warehouses;
