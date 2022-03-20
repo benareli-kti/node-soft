@@ -1,11 +1,12 @@
 const express = require("express");
 const cors = require("cors");
 const dbConfig = require("./app/config/db.config");
+const baseurl = require("./app/config/url.config");
 
 const app = express();
 
 var corsOptions = {
-  origin: "http://192.53.112.254:8081"
+  origin: `http://${baseurl.baseurl}:8081`
 };
 
 app.use(cors(corsOptions));
