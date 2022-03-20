@@ -164,7 +164,7 @@ exports.deleteAll = (req, res) => {
 
 // Find all active
 exports.findAllActive = (req, res) => {
-  ProductCat.find({ active: true })
+  ProductCat.find({ active: true }).sort({description:1})
     .then(data => {
       res.send(data);
     })

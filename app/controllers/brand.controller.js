@@ -146,7 +146,7 @@ exports.deleteAll = (req, res) => {
 
 // Find all active
 exports.findAllActive = (req, res) => {
-  Brand.find({ active: true })
+  Brand.find({ active: true }).sort({description:1})
     .then(data => {
       res.send(data);
     })
