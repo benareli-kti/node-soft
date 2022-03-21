@@ -20,6 +20,7 @@ app.use((req, res, next)=>{
 
 const db = require("./app/models");
 const Role = db.role;
+const Log = db.logs;
 const Warehouse = db.warehouses;
 const ProductCat = db.productcats;
 const Partner = db.partners;
@@ -45,6 +46,7 @@ app.get("/", cors(corsOptions), (req, res) => {
 });
 
 // routes
+require("./app/routes/log.routes")(app);
 require("./app/routes/useruser.routes")(app);
 require("./app/routes/product.routes")(app);
 require("./app/routes/productcat.routes")(app);
@@ -70,7 +72,6 @@ function initial() {
         if (err) {
           console.log("error", err);
         }
-
         console.log("added 'user' to roles collection");
       });
 
@@ -80,7 +81,6 @@ function initial() {
         if (err) {
           console.log("error", err);
         }
-
         console.log("added 'manager' to roles collection");
       });
 
@@ -90,7 +90,6 @@ function initial() {
         if (err) {
           console.log("error", err);
         }
-
         console.log("added 'admin' to roles collection");
       });
     }
@@ -98,33 +97,13 @@ function initial() {
 
   Warehouse.estimatedDocumentCount((err, count) => {
     if (!err && count === 0) {
-      new Warehouse({
-        name: "Gudang Utama",
-        short: "UTAMA",
-        active: true
-      }).save(err => {
-        if (err) {
-          console.log("error", err);
-        }
-        console.log("added 'Gudang Utama' to warehouses collection");
-      });
+      WarehouseCare();
     }
   });
 
   Partner.estimatedDocumentCount((err, count) => {
     if (!err && count === 0) {
-      new Partner({
-        code: "TEMP",
-        name: "Template",
-        isCustomer: true,
-        isSupplier: true,
-        active: true
-      }).save(err => {
-        if (err) {
-          console.log("error", err);
-        }
-        console.log("added 'Template' to partner collection");
-      });
+      PartnerCare();
     }
   });
 
@@ -132,6 +111,48 @@ function initial() {
     if (!err && count === 0) {
       ProductsCare();
     }
+  });
+}
+
+function WarehouseCare() {
+  var warehouse = new Warehouse({
+        name: "Gudang Utama",
+        short: "UTAMA",
+        active: true
+      });
+  warehouse.save(function(err){
+    if (err) return console.error(err.stack)
+    console.log("added 'Gudang Utama' to warehouse collection");
+    var logWH = new Log({
+        message: "added by system",
+        warehouse: warehouse._id
+    });
+    logWH.save(function(err){
+        if(err) return console.error(err.stack)
+        console.log("Log is added");
+    });
+  });
+}
+
+function PartnerCare() {
+  var partner = new Partner({
+        code: "TEMP",
+        name: "Template",
+        isCustomer: true,
+        isSupplier: true,
+        active: true
+      });
+  partner.save(function(err){
+    if (err) return console.error(err.stack)
+    console.log("added 'Partner' to partner collection");
+    var logPT = new Log({
+        message: "added by system",
+        partner: partner._id
+    });
+    logPT.save(function(err){
+        if(err) return console.error(err.stack)
+        console.log("Log is added");
+    });
   });
 }
 
@@ -143,20 +164,34 @@ function ProductsCare() {
       });
   prodcat.save(function(err){
     if (err) return console.error(err.stack)
-
     console.log("added 'Template' to product category collection");
-    var prod = new Product({
-        sku: "TEMP",
-        name: "Template",
-        description: "Template Product",
-        listprice: 1,
-        category: prodcat._id,
-        active: true
-      });
-
-    prod.save(function(err){
+    var logPC = new Log({
+        message: "added by system",
+        category: prodcat._id
+    });
+    logPC.save(function(err){
         if(err) return console.error(err.stack)
-        console.log("Product is added")
+        console.log("Log is added");
+        var prod = new Product({
+          sku: "TEMP",
+          name: "Template",
+          description: "Template Product",
+          listprice: 1,
+          category: prodcat._id,
+          active: true
+        });
+        prod.save(function(err){
+          if(err) return console.error(err.stack)
+          console.log("Product is added");
+          var logPR = new Log({
+            message: "added by system",
+            product: prod._id
+          });
+          logPR.save(function(err){
+            if(err) return console.error(err.stack)
+            console.log("Log is added")
+          });
+      });
     });
   });
 }

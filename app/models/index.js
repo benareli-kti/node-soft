@@ -5,6 +5,7 @@ const db = {};
 
 db.mongoose = mongoose;
 
+db.logs = require("./log.model.js")(mongoose);
 db.products = require("./product.model.js")(mongoose);
 db.productcats = require("./productcat.model.js")(mongoose);
 db.brands = require("./brand.model.js")(mongoose);
