@@ -177,6 +177,7 @@ function ProductsCare() {
           name: "Template",
           description: "Template Product",
           listprice: 1,
+          isStock: true,
           category: prodcat._id,
           active: true
         });

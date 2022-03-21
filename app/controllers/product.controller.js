@@ -20,6 +20,7 @@ exports.create = (req, res) => {
     listprice: req.body.listprice,
     botprice: req.body.botprice,
     cost: req.body.cost,
+    isStock: req.body.isStock ? req.body.isStock : false,
     category: mongoose.Types.ObjectId(req.body.category),
     brand: mongoose.Types.ObjectId(req.body.brand),
     active: req.body.active ? req.body.active : false
@@ -163,6 +164,38 @@ exports.deleteAll = (req, res) => {
 // Find all active
 exports.findAllActive = (req, res) => {
   Product.find({ active: true })
+    .populate({ path: 'category', model: ProductCat })
+    .populate({ path: 'brand', model: Brand })
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving tutorials."
+      });
+    });
+};
+
+//Find all stock
+exports.findAllStock = (req, res) => {
+  Product.find({ isStock: true })
+    .populate({ path: 'category', model: ProductCat })
+    .populate({ path: 'brand', model: Brand })
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving tutorials."
+      });
+    });
+};
+
+//Find all active stock
+exports.findAllActiveStock = (req, res) => {
+  Product.find({ active: true, isStock: true })
     .populate({ path: 'category', model: ProductCat })
     .populate({ path: 'brand', model: Brand })
     .then(data => {

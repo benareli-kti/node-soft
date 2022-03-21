@@ -12,6 +12,12 @@ module.exports = app => {
   // Retrieve all active
   routerPartner.get("/active", partners.findAllActive);
 
+  // Retrieve all customer
+  routerPartner.get("/customer", partners.findAllCustomer);
+
+  // Retrieve all supplier
+  routerPartner.get("/supplier", partners.findAllSupplier);
+
   // Retrieve a single
   routerPartner.get("/:id", partners.findOne);
 

@@ -12,6 +12,12 @@ module.exports = app => {
   // Retrieve all active
   routerProduct.get("/active", products.findAllActive);
 
+  // Retrieve all stock
+  routerProduct.get("/stock", products.findAllStock);
+
+  // Retrieve all active stock
+  routerProduct.get("/activestock", products.findAllActiveStock);
+
   // Retrieve a single
   routerProduct.get("/:id", products.findOne);
 

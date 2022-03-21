@@ -1,22 +1,21 @@
 module.exports = mongoose => {
   var schema = mongoose.Schema(
     {
-      sku: String,
-      name: String,
-      description: String,
-      listprice: Number,
-      botprice: Number,
-      cost: Number,
-      isStock: Boolean,
-      category: {
+      message: String,
+      product: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "ProductCat"
+        ref: "Product"
       },
-      brand: {
+      partner: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Brand"
+        ref: "Partner"
       },
-      active: Boolean
+      warehouse: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Warehouse"
+      },
+      qin: Number,
+      qout: Number
     },
     { timestamps: true }
   );
@@ -25,6 +24,6 @@ module.exports = mongoose => {
     object.id = _id;
     return object;
   });
-  const Product = mongoose.model("products", schema);
-  return Product;
+  const Stockmove = mongoose.model("stockmoves", schema);
+  return Stockmove;
 };

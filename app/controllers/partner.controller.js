@@ -161,3 +161,31 @@ exports.findAllActive = (req, res) => {
       });
     });
 };
+
+// Find all customer
+exports.findAllCustomer = (req, res) => {
+  Partner.find({ isCustomer: true })
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving tutorials."
+      });
+    });
+};
+
+// Find all supplier
+exports.findAllSupplier = (req, res) => {
+  Partner.find({ isSupplier: true })
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving tutorials."
+      });
+    });
+};

@@ -77,10 +77,6 @@ exports.findAll = (req, res) => {
 
   Log.find(condition)
     .populate({ path: 'user', model: User })
-    .populate({ path: 'category', model: ProductCat })
-    .populate({ path: 'brand', model: Brand })
-    .populate({ path: 'product', model: Product })
-    .populate({ path: 'partner', model: Partner })
     .then(data => {
       res.send(data);
     })
