@@ -25,6 +25,9 @@ const Warehouse = db.warehouses;
 const ProductCat = db.productcats;
 const Partner = db.partners;
 const Product = db.products;
+const Stockmove = db.stockmoves;
+const Qof = db.qofs;
+const Qop = db.qops;
 
 db.mongoose
   .connect(`mongodb://${dbConfig.HOST}:${dbConfig.PORT}/${dbConfig.DB}`, {
@@ -34,6 +37,7 @@ db.mongoose
   .then(() => {
     console.log("Successfully connect to MongoDB.");
     initial();
+    checkQof();
   })
   .catch(err => {
     console.error("Connection error", err);
@@ -53,6 +57,9 @@ require("./app/routes/productcat.routes")(app);
 require("./app/routes/brand.routes")(app);
 require("./app/routes/warehouse.routes")(app);
 require("./app/routes/partner.routes")(app);
+require("./app/routes/stockmove.routes")(app);
+require("./app/routes/qof.routes")(app);
+require("./app/routes/qop.routes")(app);
 
 require("./app/routes/auth.routes")(app);
 require("./app/routes/user.routes")(app);
@@ -62,6 +69,137 @@ const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
+
+//AI FUCK
+function checkQof() {
+  const find1 = Qof.find()
+    .then(res => {
+      if(res){
+        if(res[0].partner){
+          withPartner(res[0].product, res[0].partner, res[0].warehouse);
+        }else{
+          withoutPartner(res[0].product, res[0].warehouse);
+        }
+      }else{console.log("No Data");}
+    })
+    .catch(error => console.error(error));
+}
+
+function withPartner(prod1, part1, wh1) {
+  const find2 = Qop.find({product: prod1, partner: part1, warehouse: wh1}).then(res => {
+    if(!res.length){
+      var qop1 = {product: prod1, partner: part1, warehouse: wh1, qop: 0};
+      Qop.create(qop1).then(res => {
+        let qop1 = res._id;
+        const prod2 = Product.findOneAndUpdate({_id:prod1}, {$push: {qop: res._id}}, { new: true })
+          .then(res => {
+            withPartnerCalc(qop1, prod1, part1, wh1);
+          }).catch(error => console.error(error));
+      })
+      .catch(error => console.error(error));
+      
+
+    }else{withPartnerCalc(res[0]._id, prod1, part1, wh1)}
+  }).catch(error => console.error(error));
+}
+
+function withPartnerCalc(qop2, prod2, part2, wh2) {
+  const cursor = Qof.find({product:prod2,partner:part2,warehouse:wh2})
+    .then(results => {
+      let x = 0;
+      for (let i = 0; i < results.length; i++){
+        x = x + results[i].qof};
+
+      const prod = Product.find({_id:prod2})
+        .then(resultsP => {
+          let y = resultsP[0].qoh
+          const upProd = Product.updateOne({_id:prod2},{qoh: x+y})
+            .then(resultsUp => {
+              withPartnerEnd(x, qop2, prod2, part2, wh2);
+            })
+            .catch(error => console.error(error));
+        })
+        .catch(error => console.error(error));
+    })
+    .catch(error => console.error(error));
+}
+
+function withPartnerEnd(x, qop3, prod3, part3, wh3) {
+  const findQop = Qop.find({_id:qop3})
+    .then(resultsQop1 => {
+      let z = resultsQop1[0].qop
+      const upProd = Qop.updateOne({_id:qop3},{qop: x+z})
+        .then(resultsQop2 => {
+          const delQof = Qof.deleteMany({product:prod3,partner:part3,warehouse:wh3})
+            .then(resultsdelQof => {
+              console.log(prod3+", "+part3+", "+wh3+" handled");
+              checkQof();
+            })
+            .catch(error => console.error(error));
+        })
+        .catch(error => console.error(error));
+    })
+    .catch(error => console.error(error));
+}
+
+//Without Partner Start Here
+function withoutPartner(proda, wha){
+  const findA = Qop.find({product: proda, warehouse: wha}).then(res => {
+    if(!res.length){
+      var qopaa = {product: proda, warehouse: wha, qop: 0};
+      Qop.create(qopaa).then(res => {
+        let qopa = res._id;
+        const prodA = Product.findOneAndUpdate({_id:proda}, {$push: {qop: res._id}}, { new: true })
+          .then(res => {
+            withoutPartnerCalc(qopa, proda, wha);
+          }).catch(error => console.error(error));
+      })
+      .catch(error => console.error(error));
+      
+
+    }else{withoutPartnerCalc(res[0]._id, proda, wha)}
+  }).catch(error => console.error(error));
+}
+
+function withoutPartnerCalc(qopb, prodb, whb) {
+  const cursor = Qof.find({product:prodb, warehouse:whb, partner: { $exists : false }})
+    .then(results => {
+      let a = 0;
+      for (let i = 0; i < results.length; i++){
+        a = a + results[i].qof};
+
+      const prod = Product.find({_id:prodb})
+        .then(resultsP => {
+          let b = resultsP[0].qoh
+          const upProd = Product.updateOne({_id:prodb},{qoh: a+b})
+            .then(resultsUp => {
+              withoutPartnerEnd(a, qopb, prodb, whb);
+            })
+            .catch(error => console.error(error));
+        })
+        .catch(error => console.error(error));
+    })
+    .catch(error => console.error(error));
+}
+
+function withoutPartnerEnd(a, qopc, prodc, whc) {
+  const findQop = Qop.find({_id:qopc})
+    .then(resultsQop1 => {
+      let d = resultsQop1[0].qop
+      const upProd = Qop.updateOne({_id:qopc},{qop: a+d})
+        .then(resultsQop2 => {
+          const delQof = Qof.deleteMany({product:prodc, warehouse:whc, partner: { $exists : false }})
+            .then(resultsdelQof => {
+              console.log(prodc+", "+whc+" handled");
+              checkQof();
+            })
+            .catch(error => console.error(error));
+        })
+        .catch(error => console.error(error));
+    })
+    .catch(error => console.error(error));
+}
+//AI SHIT
 
 function initial() {
   Role.estimatedDocumentCount((err, count) => {
@@ -177,6 +315,7 @@ function ProductsCare() {
           name: "Template",
           description: "Template Product",
           listprice: 1,
+          qoh: 0,
           isStock: true,
           category: prodcat._id,
           active: true

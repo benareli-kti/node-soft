@@ -8,6 +8,7 @@ module.exports = mongoose => {
       botprice: Number,
       cost: Number,
       isStock: Boolean,
+      qoh: Number,
       category: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "ProductCat"
@@ -16,6 +17,10 @@ module.exports = mongoose => {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Brand"
       },
+      qop:[
+        {type: mongoose.Schema.Types.ObjectId,
+        ref: "Partner"}
+      ],
       active: Boolean
     },
     { timestamps: true }

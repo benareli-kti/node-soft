@@ -2,6 +2,7 @@ const db = require("../models");
 const Product = db.products;
 const ProductCat = db.productcats;
 const Brand = db.brands;
+const Partner = db.partners;
 const mongoose = require("mongoose");
 
 // Create and Save new
@@ -20,6 +21,7 @@ exports.create = (req, res) => {
     listprice: req.body.listprice,
     botprice: req.body.botprice,
     cost: req.body.cost,
+    qoh: req.body.qoh,
     isStock: req.body.isStock ? req.body.isStock : false,
     category: mongoose.Types.ObjectId(req.body.category),
     brand: mongoose.Types.ObjectId(req.body.brand),

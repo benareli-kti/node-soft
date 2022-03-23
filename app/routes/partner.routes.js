@@ -18,6 +18,12 @@ module.exports = app => {
   // Retrieve all supplier
   routerPartner.get("/supplier", partners.findAllSupplier);
 
+  // Retrieve all active customer
+  routerPartner.get("/activecustomer", partners.findAllActiveCustomer);
+
+  // Retrieve all active supplier
+  routerPartner.get("/activesupplier", partners.findAllActiveSupplier);
+
   // Retrieve a single
   routerPartner.get("/:id", partners.findOne);
 

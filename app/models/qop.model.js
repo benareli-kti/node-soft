@@ -1,12 +1,7 @@
 module.exports = mongoose => {
   var schema = mongoose.Schema(
     {
-      qin: Number,
-      qout: Number,
-      user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User"
-      },
+      qop: Number,
       product: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Product"
@@ -27,6 +22,6 @@ module.exports = mongoose => {
     object.id = _id;
     return object;
   });
-  const Stockmove = mongoose.model("stockmoves", schema);
-  return Stockmove;
+  const Qop = mongoose.model("qops", schema);
+  return Qop;
 };

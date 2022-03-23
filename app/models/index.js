@@ -11,8 +11,11 @@ db.productcats = require("./productcat.model.js")(mongoose);
 db.brands = require("./brand.model.js")(mongoose);
 db.warehouses = require("./warehouse.model.js")(mongoose);
 db.partners = require("./partner.model.js")(mongoose);
-db.users = require("./useruser.model.js")(mongoose);
+db.stockmoves = require("./stockmove.model.js")(mongoose);
+db.qofs = require("./qof.model.js")(mongoose);
+db.qops = require("./qop.model.js")(mongoose);
 
+db.users = require("./useruser.model.js")(mongoose);
 db.user = require("./user.model");
 db.role = require("./role.model");
 
