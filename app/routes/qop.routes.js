@@ -10,7 +10,7 @@ module.exports = app => {
   routerQop.get("/", qops.findAll);
 
   // Retrieve a single
-  routerQop.get("/:id", qops.findOne);
+  routerQop.get("/id/:id", qops.findOne);
   
   // Update with id
   routerQop.get("/cu/", qops.createUpdate);
