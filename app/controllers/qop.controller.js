@@ -47,9 +47,9 @@ exports.createUpdate = (req, res) => {
                 const prod2 = Product.find({_id:req.body.product})
                   .then(datac => {
                     let x = datac[0].qoh;
-                    const prod3 = Product.findOneAndUpdate({_id:req.body.product},{qoh:x+req.body.qty})
+                    const prod3 = Product.findOneAndUpdate({_id:req.body.product},{qoh:x+req.body.qop})
                       .then(datad => {
-                        const qop2 = Qop.update({_id:qopid},{qop:req.body.qty})
+                        const qop2 = Qop.update({_id:qopid},{qop:req.body.qop})
                           .then(datae => {
                             res.send(datae);
                           }).catch(err =>{res.status(500).send({message:err.message});});
@@ -60,15 +60,15 @@ exports.createUpdate = (req, res) => {
         }else{
           let qopid = data[0]._id;
           let qopqop = data[0].qop;
-          Qop.update({_id:qopid},{qop: qop+req.body.qty})
+          Qop.update({_id:qopid},{qop: qop+req.body.qop})
             .then(dataa => {
               const prod1 = Product.find({_id:req.body.product})
                 .then(datab => {
                   let x = datab[0].qoh;
-                  const prod2 = Product.findOneAndUpdate({_id:req.body.product},{qoh:x+req.body.qty})
+                  const prod2 = Product.findOneAndUpdate({_id:req.body.product},{qoh:x+req.body.qop})
                     .then(datac => {
                       res.send(datac);
-                    })
+                    }).catch(err =>{res.status(500).send({message:err.message}); });
                 }).catch(err =>{res.status(500).send({message:err.message}); });
             }).catch(err =>{res.status(500).send({message:err.message}); });
         }
@@ -91,9 +91,9 @@ exports.createUpdate = (req, res) => {
                 const prod2 = Product.find({_id:req.body.product})
                   .then(datac => {
                     let x = datac[0].qoh;
-                    const prod3 = Product.findOneAndUpdate({_id:req.body.product},{qoh:x+req.body.qty})
+                    const prod3 = Product.findOneAndUpdate({_id:req.body.product},{qoh:x+req.body.qop})
                       .then(datad => {
-                        const qop2 = Qop.update({_id:qopid},{qop:req.body.qty})
+                        const qop2 = Qop.update({_id:qopid},{qop:req.body.qop})
                           .then(datae => {
                             res.send(datae);
                           }).catch(err =>{res.status(500).send({message:err.message}); });
@@ -104,15 +104,15 @@ exports.createUpdate = (req, res) => {
         }else{
           let qopid = data[0]._id;
           let qopqop = data[0].qop;
-          Qop.update({_id:qopid},{qop: qop+req.body.qty})
+          Qop.update({_id:qopid},{qop: qop+req.body.qop})
             .then(dataa => {
               const prod1 = Product.find({_id:req.body.product})
                 .then(datab => {
                   let x = datab[0].qoh;
-                  const prod2 = Product.findOneAndUpdate({_id:req.body.product},{qoh:x+req.body.qty})
+                  const prod2 = Product.findOneAndUpdate({_id:req.body.product},{qoh:x+req.body.qop})
                     .then(datac => {
                       res.send(datac);
-                    })
+                    }).catch(err =>{res.status(500).send({message:err.message}); });
                 }).catch(err =>{res.status(500).send({message:err.message}); });
             }).catch(err =>{res.status(500).send({message:err.message}); });
         }
