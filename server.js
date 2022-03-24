@@ -39,7 +39,6 @@ db.mongoose
   .then(() => {
     console.log("Successfully connect to MongoDB.");
     initial();
-    checkQof();
   })
   .catch(err => {
     console.error("Connection error", err);
@@ -72,8 +71,9 @@ app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
 
-cron.schedule('20 5 * * *', function() {
-  console.log('Running without pants, the dick is everywhere');
+cron.schedule('00 17 * * *', function() {
+  console.log('Running stock calculation');
+  checkQof();
 });
 
 //AI FUCK
