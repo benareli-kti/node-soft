@@ -72,8 +72,8 @@ app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
 
-cron.schedule('15 5 * * *', function() {
-  console.log('Running task every second');
+cron.schedule('20 5 * * *', function() {
+  console.log('Running without pants, the dick is everywhere');
 });
 
 //AI FUCK
