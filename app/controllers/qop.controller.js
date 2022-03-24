@@ -38,9 +38,9 @@ exports.createUpdate = (req, res) => {
     Qop.find({product: req.query.product, partner: req.query.partner, warehouse: req.query.warehouse})
       .then(data => {
         if(!data.length){
-          const qop = ({product: mongoose.Types.ObjectId(req.query.product),partner: mongoose.Types.ObjectId(req.query.partner),
+          const qopp = ({product: mongoose.Types.ObjectId(req.query.product),partner: mongoose.Types.ObjectId(req.query.partner),
             warehouse: mongoose.Types.ObjectId(req.query.warehouse), qop: 0});
-          Qop.create(qop).then(dataa => {
+          Qop.create(qopp).then(dataa => {
             let qopid = dataa[0]._id;
             const prod1 = Product.findOneAndUpdate({_id:req.query.product}, {$push: {qop: res._id}}, { new: true })
               .then(datab => {
@@ -83,8 +83,8 @@ exports.createUpdate = (req, res) => {
     Qop.find({product: req.query.product, partner: { $exists : false }, warehouse: req.query.warehouse})
       .then(data => {
         if(!data.length){
-          const qop = ({product: mongoose.Types.ObjectId(req.query.product),warehouse: mongoose.Types.ObjectId(req.query.warehouse), qop: 0});
-          Qop.create(qop).then(dataa => {
+          const qopp = ({product: mongoose.Types.ObjectId(req.query.product),warehouse: mongoose.Types.ObjectId(req.query.warehouse), qop: 0});
+          Qop.create(qopp).then(dataa => {
             let qopid = dataa[0]._id;
             const prod1 = Product.findOneAndUpdate({_id:req.query.product}, {$push: {qop: res._id}}, { new: true })
               .then(datab => {
