@@ -72,7 +72,7 @@ app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
 
-cron.schedule('* * * * * *', function() {
+cron.schedule('15 5 * * *', function() {
   console.log('Running task every second');
 });
 
