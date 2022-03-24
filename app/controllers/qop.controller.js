@@ -52,11 +52,11 @@ exports.createUpdate = (req, res) => {
                         const qop2 = Qop.update({_id:qopid},{qop:req.query.qop})
                           .then(datae => {
                             res.send(datae);
-                          }).catch(err =>{res.status(500).send({message:err.message});});
-                      }).catch(err =>{res.status(500).send({message:err.message}); });
-                  }).catch(err =>{res.status(500).send({message:err.message}); });
-              }).catch(err =>{res.status(500).send({message:err.message}); });
-          }).catch(err =>{res.status(500).send({message:err.message}); });
+                          }).catch(err =>{res.status(500).send({message:err.message || '05'});});
+                      }).catch(err =>{res.status(500).send({message:err.message || '04'}); });
+                  }).catch(err =>{res.status(500).send({message:err.message || '03'}); });
+              }).catch(err =>{res.status(500).send({message:err.message || '02'}); });
+          }).catch(err =>{res.status(500).send({message:err.message || '01''}); });
         }else{
           let qopid = data[0]._id;
           let qopqop = data[0].qop;
