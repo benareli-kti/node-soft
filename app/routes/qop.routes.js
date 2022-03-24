@@ -13,7 +13,7 @@ module.exports = app => {
   routerQop.get("/id/:id", qops.findOne);
   
   // Update with id
-  routerQop.get("/cu/", qops.createUpdate);
+  routerQop.post("/cu", qops.createUpdate);
 
   app.use("/api/qops", routerQop);
 };
