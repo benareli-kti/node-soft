@@ -3,6 +3,8 @@ const cors = require("cors");
 const dbConfig = require("./app/config/db.config");
 const baseurl = require("./app/config/url.config");
 
+const cron = require('node-cron');
+
 const app = express();
 
 var corsOptions = {
@@ -68,6 +70,10 @@ require("./app/routes/user.routes")(app);
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
+});
+
+cron.schedule('* * * * * *', function() {
+  console.log('Running task every second');
 });
 
 //AI FUCK
