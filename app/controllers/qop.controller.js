@@ -52,11 +52,11 @@ exports.createUpdate = (req, res) => {
                         const qop2 = Qop.update({_id:qopid},{qop:req.query.qty})
                           .then(datae => {
                             res.send(datae);
-                          }).catch(err =>{res.status(500).send({message:err.message});
-                      }).catch(err =>{res.status(500).send({message:err.message});
-                  }).catch(err =>{res.status(500).send({message:err.message});
-              }).catch(err =>{res.status(500).send({message:err.message});
-          }).catch(err =>{res.status(500).send({message:err.message});
+                          }).catch(err =>{res.status(500).send({message:err.message});});
+                      }).catch(err =>{res.status(500).send({message:err.message}); });
+                  }).catch(err =>{res.status(500).send({message:err.message}); });
+              }).catch(err =>{res.status(500).send({message:err.message}); });
+          }).catch(err =>{res.status(500).send({message:err.message}); });
         }else{
           let qopid = data[0]._id;
           let qopqop = data[0].qop;
@@ -69,8 +69,8 @@ exports.createUpdate = (req, res) => {
                     .then(datac => {
                       res.send(datac);
                     })
-                }).catch(err =>{res.status(500).send({message:err.message});
-            }).catch(err =>{res.status(500).send({message:err.message}); 
+                }).catch(err =>{res.status(500).send({message:err.message}); });
+            }).catch(err =>{res.status(500).send({message:err.message}); });
         }
         
       })
@@ -96,11 +96,11 @@ exports.createUpdate = (req, res) => {
                         const qop2 = Qop.update({_id:qopid},{qop:req.query.qty})
                           .then(datae => {
                             res.send(datae);
-                          }).catch(err =>{res.status(500).send({message:err.message});
-                      }).catch(err =>{res.status(500).send({message:err.message});
-                  }).catch(err =>{res.status(500).send({message:err.message});
-              }).catch(err =>{res.status(500).send({message:err.message});
-          }).catch(err =>{res.status(500).send({message:err.message});
+                          }).catch(err =>{res.status(500).send({message:err.message}); });
+                      }).catch(err =>{res.status(500).send({message:err.message}); });
+                  }).catch(err =>{res.status(500).send({message:err.message}); });
+              }).catch(err =>{res.status(500).send({message:err.message}); });
+          }).catch(err =>{res.status(500).send({message:err.message}); });
         }else{
           let qopid = data[0]._id;
           let qopqop = data[0].qop;
@@ -113,8 +113,8 @@ exports.createUpdate = (req, res) => {
                     .then(datac => {
                       res.send(datac);
                     })
-                }).catch(err =>{res.status(500).send({message:err.message});
-            }).catch(err =>{res.status(500).send({message:err.message}); 
+                }).catch(err =>{res.status(500).send({message:err.message}); });
+            }).catch(err =>{res.status(500).send({message:err.message}); });
         }
         
       })
