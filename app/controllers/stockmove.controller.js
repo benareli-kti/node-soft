@@ -25,7 +25,7 @@ exports.create = (req, res) => {
       qout: req.body.qout
     });
     stockmove.save(stockmove).then(data => {res.send(data);}).catch(err => {res.status(500).send({message:
-          err.message || "Some error occurred while creating the Tutorial."});
+          err.message || "Some error occurred while creating the Data."});
     });
   }
   if(req.body.partner == "null"){
@@ -37,7 +37,7 @@ exports.create = (req, res) => {
       qout: req.body.qout
     });
     stockmove.save(stockmove).then(data => {res.send(data);}).catch(err => {res.status(500).send({message:
-          err.message || "Some error occurred while creating the Tutorial."});
+          err.message || "Some error occurred while creating the Data."});
     });
   }
 };
@@ -58,7 +58,7 @@ exports.findAll = (req, res) => {
     .catch(err => {
       res.status(500).send({
         message:
-          err.message || "Some error occurred while retrieving tutorials."
+          err.message || "Some error occurred while retrieving data."
       });
     });
 };
@@ -100,7 +100,7 @@ exports.findByDesc = (req, res) => {
     .catch(err => {
       res.status(500).send({
         message:
-          err.message || "Some error occurred while retrieving tutorials."
+          err.message || "Some error occurred while retrieving data."
       });
     });
 };
