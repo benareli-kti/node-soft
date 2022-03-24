@@ -34,22 +34,22 @@ exports.create = (req, res) => {
 exports.createUpdate = (req, res) => {
 
   // Find first
-  if(req.query.partner != "null"){
-    Qop.find({product: req.query.product, partner: req.query.partner, warehouse: req.query.warehouse})
+  if(req.body.partner != "null"){
+    Qop.find({product: req.body.product, partner: req.body.partner, warehouse: req.body.warehouse})
       .then(data => {
         if(!data.length){
-          const qopp = ({product: mongoose.Types.ObjectId(req.query.product),partner: mongoose.Types.ObjectId(req.query.partner),
-            warehouse: mongoose.Types.ObjectId(req.query.warehouse), qop: 0});
+          const qopp = ({product: mongoose.Types.ObjectId(req.body.product),partner: mongoose.Types.ObjectId(req.body.partner),
+            warehouse: mongoose.Types.ObjectId(req.body.warehouse), qop: 0});
           Qop.create(qopp).then(dataa => {
             let qopid = dataa[0]._id;
-            const prod1 = Product.findOneAndUpdate({_id:req.query.product}, {$push: {qop: res._id}}, { new: true })
+            const prod1 = Product.findOneAndUpdate({_id:req.body.product}, {$push: {qop: res._id}}, { new: true })
               .then(datab => {
-                const prod2 = Product.find({_id:req.query.product})
+                const prod2 = Product.find({_id:req.body.product})
                   .then(datac => {
                     let x = datac[0].qoh;
-                    const prod3 = Product.findOneAndUpdate({_id:req.query.product},{qoh:x+req.query.qop})
+                    const prod3 = Product.findOneAndUpdate({_id:req.body.product},{qoh:x+req.body.qop})
                       .then(datad => {
-                        const qop2 = Qop.update({_id:qopid},{qop:req.query.qop})
+                        const qop2 = Qop.update({_id:qopid},{qop:req.body.qop})
                           .then(datae => {
                             res.send(datae);
                           }).catch(err =>{res.status(500).send({message:err.message || '05'});});
@@ -60,12 +60,12 @@ exports.createUpdate = (req, res) => {
         }else{
           let qopid = data[0]._id;
           let qopqop = data[0].qop;
-          Qop.update({_id:qopid},{qop: qop+req.query.qop})
+          Qop.update({_id:qopid},{qop: qop+req.body.qop})
             .then(dataa => {
-              const prod1 = Product.find({_id:req.query.product})
+              const prod1 = Product.find({_id:req.body.product})
                 .then(datab => {
                   let x = datab[0].qoh;
-                  const prod2 = Product.findOneAndUpdate({_id:req.query.product},{qoh:x+req.query.qop})
+                  const prod2 = Product.findOneAndUpdate({_id:req.body.product},{qoh:x+req.body.qop})
                     .then(datac => {
                       res.send(datac);
                     }).catch(err =>{res.status(500).send({message:err.message}); });
@@ -80,20 +80,20 @@ exports.createUpdate = (req, res) => {
         });
       });
   }else{
-    Qop.find({product: req.query.product, partner: { $exists : false }, warehouse: req.query.warehouse})
+    Qop.find({product: req.body.product, partner: { $exists : false }, warehouse: req.body.warehouse})
       .then(data => {
         if(!data.length){
-          const qopp = ({product: mongoose.Types.ObjectId(req.query.product),warehouse: mongoose.Types.ObjectId(req.query.warehouse), qop: 0});
+          const qopp = ({product: mongoose.Types.ObjectId(req.body.product),warehouse: mongoose.Types.ObjectId(req.body.warehouse), qop: 0});
           Qop.create(qopp).then(dataa => {
             let qopid = dataa[0]._id;
-            const prod1 = Product.findOneAndUpdate({_id:req.query.product}, {$push: {qop: res._id}}, { new: true })
+            const prod1 = Product.findOneAndUpdate({_id:req.body.product}, {$push: {qop: res._id}}, { new: true })
               .then(datab => {
-                const prod2 = Product.find({_id:req.query.product})
+                const prod2 = Product.find({_id:req.body.product})
                   .then(datac => {
                     let x = datac[0].qoh;
-                    const prod3 = Product.findOneAndUpdate({_id:req.query.product},{qoh:x+req.query.qop})
+                    const prod3 = Product.findOneAndUpdate({_id:req.body.product},{qoh:x+req.body.qop})
                       .then(datad => {
-                        const qop2 = Qop.update({_id:qopid},{qop:req.query.qop})
+                        const qop2 = Qop.update({_id:qopid},{qop:req.body.qop})
                           .then(datae => {
                             res.send(datae);
                           }).catch(err =>{res.status(500).send({message:err.message}); });
@@ -104,12 +104,12 @@ exports.createUpdate = (req, res) => {
         }else{
           let qopid = data[0]._id;
           let qopqop = data[0].qop;
-          Qop.update({_id:qopid},{qop: qop+req.query.qop})
+          Qop.update({_id:qopid},{qop: qop+req.body.qop})
             .then(dataa => {
-              const prod1 = Product.find({_id:req.query.product})
+              const prod1 = Product.find({_id:req.body.product})
                 .then(datab => {
                   let x = datab[0].qoh;
-                  const prod2 = Product.findOneAndUpdate({_id:req.query.product},{qoh:x+req.query.qop})
+                  const prod2 = Product.findOneAndUpdate({_id:req.body.product},{qoh:x+req.body.qop})
                     .then(datac => {
                       res.send(datac);
                     }).catch(err =>{res.status(500).send({message:err.message}); });
