@@ -9,5 +9,5 @@ module.exports = app => {
   // Retrieve a single
   routerRole.get("/:id", roles.findOne);
 
-  app.use("/api/userroles", routerRole);
+  app.use("/api/userrole", routerRole);
 };
