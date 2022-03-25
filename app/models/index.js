@@ -16,7 +16,7 @@ db.qofs = require("./qof.model.js")(mongoose);
 db.qops = require("./qop.model.js")(mongoose);
 
 db.users = require("./useruser.model.js")(mongoose);
-db.users = require("./userrole.model.js")(mongoose);
+db.role = require("./userrole.model.js")(mongoose);
 db.user = require("./user.model");
 db.role = require("./role.model");
 
