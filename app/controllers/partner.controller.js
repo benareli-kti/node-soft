@@ -1,5 +1,7 @@
 const db = require("../models");
 const Partner = db.partners;
+const Log = db.logs;
+const User = db.users;
 
 // Create and Save new
 exports.create = (req, res) => {
@@ -9,8 +11,7 @@ exports.create = (req, res) => {
     return;
   }
 
-  // Create
-  const partner = new Partner({
+  const partner = ({
     code: req.body.code,
     name: req.body.name,
     phone: req.body.phone,
@@ -18,19 +19,12 @@ exports.create = (req, res) => {
     isSupplier: req.body.isSupplier ? req.body.isSupplier : false,
     active: req.body.active ? req.body.active : false
   });
-
-  // Save in the database
-  partner
-    .save(partner)
-    .then(data => {
-      res.send(data);
-    })
-    .catch(err => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while creating the Data."
-      });
-    });
+  Partner.create(partner).then(dataa => {
+    const log = ({message: "add", partner: dataa._id, user: req.body.user,});
+    Log.create(log).then(datab => {
+      res.send(datab);
+    }).catch(err =>{res.status(500).send({message:err.message}); });
+  }).catch(err =>{res.status(500).send({message:err.message}); });
 };
 
 // Retrieve all from the database.
@@ -100,7 +94,12 @@ exports.update = (req, res) => {
         res.status(404).send({
           message: `Cannot update with id=${id}. Maybe Data was not found!`
         });
-      } else res.send({ message: "Updated successfully." });
+      } else {
+        const log = ({message: req.body.message, partner: req.params.id, user: req.body.user,});
+        Log.create(log).then(datab => {
+          res.send({ message: "Updated successfully." });
+        }).catch(err =>{res.status(500).send({message:err.message}); });
+      }
     })
     .catch(err => {
       res.status(500).send({

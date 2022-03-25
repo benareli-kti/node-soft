@@ -16,9 +16,11 @@ db.qofs = require("./qof.model.js")(mongoose);
 db.qops = require("./qop.model.js")(mongoose);
 
 db.users = require("./useruser.model.js")(mongoose);
+db.users = require("./userrole.model.js")(mongoose);
 db.user = require("./user.model");
 db.role = require("./role.model");
 
-db.ROLES = ["user", "admin", "manager"];
+db.ROLES = ["inventory_user", "inventory_manager", "partner_user", "partner_manager", 
+	"trans_user", "trans_manager", "admin"];
 
 module.exports = db;

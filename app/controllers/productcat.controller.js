@@ -1,5 +1,7 @@
 const db = require("../models");
 const ProductCat = db.productcats;
+const Log = db.logs;
+const User = db.users;
 
 // Create and Save new
 exports.create = (req, res) => {
@@ -9,25 +11,14 @@ exports.create = (req, res) => {
     return;
   }
 
-  // Create
-  const productcat = new ProductCat({
-    catid: req.body.catid,
-    description: req.body.description,
-    active: req.body.active ? req.body.active : false
-  });
-
-  // Save in the database
-  productcat
-    .save(productcat)
-    .then(data => {
-      res.send(data);
-    })
-    .catch(err => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while creating the Data."
-      });
-    });
+  const prodcat = ({catid: req.body.catid, description: req.body.description, 
+    active: req.body.active ? req.body.active : false});
+  ProductCat.create(prodcat).then(dataa => {
+    const log = ({message: "add", category: dataa._id, user: req.body.user,});
+    Log.create(log).then(datab => {
+      res.send(datab);
+    }).catch(err =>{res.status(500).send({message:err.message}); });
+  }).catch(err =>{res.status(500).send({message:err.message}); });
 };
 
 // Retrieve all from the database.
@@ -114,7 +105,12 @@ exports.update = (req, res) => {
         res.status(404).send({
           message: `Cannot update with id=${id}. Maybe Data was not found!`
         });
-      } else res.send({ message: "Updated successfully." });
+      } else {
+        const log = ({message: req.body.message, category: req.params.id, user: req.body.user,});
+        Log.create(log).then(datab => {
+          res.send({ message: "Updated successfully." });
+        }).catch(err =>{res.status(500).send({message:err.message}); });
+      };
     })
     .catch(err => {
       res.status(500).send({

@@ -3,6 +3,8 @@ const Product = db.products;
 const ProductCat = db.productcats;
 const Brand = db.brands;
 const Partner = db.partners;
+const Log = db.logs;
+const User = db.users;
 const mongoose = require("mongoose");
 
 // Create and Save new
@@ -13,8 +15,7 @@ exports.create = (req, res) => {
     return;
   }
 
-  // Create
-  const product = new Product({
+  const product = ({
     sku: req.body.sku,
     name: req.body.name,
     description: req.body.description,
@@ -23,23 +24,16 @@ exports.create = (req, res) => {
     cost: req.body.cost,
     qoh: req.body.qoh,
     isStock: req.body.isStock ? req.body.isStock : false,
-    category: mongoose.Types.ObjectId(req.body.category),
-    brand: mongoose.Types.ObjectId(req.body.brand),
+    category: req.body.category,
+    brand: req.body.brand,
     active: req.body.active ? req.body.active : false
   });
-
-  // Save in the database
-  product
-    .save(product)
-    .then(data => {
-      res.send(data);
-    })
-    .catch(err => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while creating the Data."
-      });
-    });
+  Product.create(product).then(dataa => {
+    const log = ({message: "add", product: dataa._id, user: req.body.user,});
+    Log.create(log).then(datab => {
+      res.send(datab);
+    }).catch(err =>{res.status(500).send({message:err.message}); });
+  }).catch(err =>{res.status(500).send({message:err.message}); });
 };
 
 // Retrieve all from the database.
@@ -115,7 +109,12 @@ exports.update = (req, res) => {
         res.status(404).send({
           message: `Cannot update with id=${id}. Maybe Data was not found!`
         });
-      } else res.send({ message: "Updated successfully." });
+      } else {
+        const log = ({message: req.body.message, product: req.params.id, user: req.body.user,});
+        Log.create(log).then(datab => {
+          res.send({ message: "Updated successfully." });
+        }).catch(err =>{res.status(500).send({message:err.message}); });
+      }
     })
     .catch(err => {
       res.status(500).send({

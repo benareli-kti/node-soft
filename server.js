@@ -53,6 +53,7 @@ app.get("/", cors(corsOptions), (req, res) => {
 // routes
 require("./app/routes/log.routes")(app);
 require("./app/routes/useruser.routes")(app);
+require("./app/routes/userrole.routes")(app);
 require("./app/routes/product.routes")(app);
 require("./app/routes/productcat.routes")(app);
 require("./app/routes/brand.routes")(app);
@@ -210,30 +211,32 @@ function withoutPartnerEnd(a, qopc, prodc, whc) {
 function initial() {
   Role.estimatedDocumentCount((err, count) => {
     if (!err && count === 0) {
-      new Role({
-        name: "user"
-      }).save(err => {
-        if (err) {
-          console.log("error", err);
-        }
-        console.log("added 'user' to roles collection");
+      new Role({name: "inventory_user"})
+      .save(err => {if (err) {console.log("error", err);}
+        console.log("added 'inventory_user' to roles collection");
       });
-
-      new Role({
-        name: "manager"
-      }).save(err => {
-        if (err) {
-          console.log("error", err);
-        }
-        console.log("added 'manager' to roles collection");
+      new Role({name: "inventory_manager"})
+      .save(err => {if (err) {console.log("error", err);}
+        console.log("added 'inventory_user' to roles collection");
       });
-
-      new Role({
-        name: "admin"
-      }).save(err => {
-        if (err) {
-          console.log("error", err);
-        }
+      new Role({name: "partner_user"})
+      .save(err => {if (err) {console.log("error", err);}
+        console.log("added 'inventory_user' to roles collection");
+      });
+      new Role({name: "partner_manager"})
+      .save(err => {if (err) {console.log("error", err);}
+        console.log("added 'inventory_user' to roles collection");
+      });
+      new Role({name: "trans_user"})
+      .save(err => {if (err) {console.log("error", err);}
+        console.log("added 'inventory_user' to roles collection");
+      });
+      new Role({name: "trans_manager"})
+      .save(err => {if (err) {console.log("error", err);}
+        console.log("added 'inventory_user' to roles collection");
+      });
+      new Role({name: "admin"})
+      .save(err => {if (err) {console.log("error", err);}
         console.log("added 'admin' to roles collection");
       });
     }
