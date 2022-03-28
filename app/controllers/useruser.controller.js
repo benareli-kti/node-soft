@@ -1,5 +1,6 @@
 const db = require("../models");
 const User = db.users;
+const Role = db.roles;
 
 // Create and Save new
 exports.create = (req, res) => {
@@ -35,6 +36,7 @@ exports.findAll = (req, res) => {
   var condition = username ? { username: { $regex: new RegExp(username), $options: "i" } } : {};
 
   User.find(condition)
+    .populate({ path: 'roles', model: Role })
     .then(data => {
       res.send(data);
     })
@@ -51,6 +53,7 @@ exports.findOne = (req, res) => {
   const id = req.params.id;
 
   User.findById(id)
+    .populate({ path: 'roles', model: Role })
     .then(data => {
       if (!data)
         res.status(404).send({ message: "Not found Data with id " + id });

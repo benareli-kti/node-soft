@@ -2,7 +2,13 @@ module.exports = mongoose => {
   var schema = mongoose.Schema(
     {
       username: String,
-      password: String
+      password: String,
+      roles: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Role"
+      }
+    ]
     },
     { timestamps: true }
   );
