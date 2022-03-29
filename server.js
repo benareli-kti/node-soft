@@ -241,9 +241,13 @@ function initial() {
         console.log("added 'admin' to roles collection");
       });
       
-      new Id({pos_id: 1},{trans_id:1})
-      .save(err => {if (err) {console.log("error", err);}
-      console.log("added 'ids' to roles collection");
+      var ids = new Id({
+        pos_id: 1,
+        transfer_id: 1
+      });
+      ids.save(function(err){
+        if (err) return console.error(err.stack)
+        console.log("added 'Ids' to warehouse collection");
       });
     }
   });
