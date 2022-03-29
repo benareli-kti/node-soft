@@ -52,6 +52,7 @@ app.get("/", cors(corsOptions), (req, res) => {
 });
 
 // routes
+require("./app/routes/id.routes")(app);
 require("./app/routes/log.routes")(app);
 require("./app/routes/useruser.routes")(app);
 require("./app/routes/userrole.routes")(app);
