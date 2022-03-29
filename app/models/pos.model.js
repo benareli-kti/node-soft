@@ -18,7 +18,7 @@ module.exports = mongoose => {
         {type: mongoose.Schema.Types.ObjectId,
         ref: "Posdetail"}
       ],
-      open: Boolean,ß
+      open: Boolean,
     },
     { timestamps: true }
   );
