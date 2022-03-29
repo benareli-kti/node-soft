@@ -244,6 +244,7 @@ function initial() {
       new Id({pos_id: 1},{trans_id:1})
       .save(err => {if (err) {console.log("error", err);}
       console.log("added 'ids' to roles collection");
+      });
     }
   });
 
