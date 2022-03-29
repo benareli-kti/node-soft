@@ -30,7 +30,7 @@ const Product = db.products;
 const Stockmove = db.stockmoves;
 const Qof = db.qofs;
 const Qop = db.qops;
-const Id = db.ids;
+const Ids = db.ids;
 
 db.mongoose
   .connect(`mongodb://${dbConfig.HOST}:${dbConfig.PORT}/${dbConfig.DB}`, {
@@ -241,7 +241,7 @@ function initial() {
         console.log("added 'admin' to roles collection");
       });
       
-      var ids = new Id({
+      var ids = new Ids({
         pos_id: 1,
         transfer_id: 1
       });
