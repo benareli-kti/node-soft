@@ -26,11 +26,9 @@ exports.create = (req, res) => {
     open: req.body.open
   });
   Pos.create(pos).then(dataa => {
-    const log = ({message: "add", pos: dataa._id, user: req.body.user,});
-    Log.create(log).then(datab => {
+   
       res.send(datab);
-    }).catch(err =>{res.status(500).send({message:err.message}); });
-  }).catch(err =>{res.status(500).send({message:err.message}); });
+   });
 };
 
 // Retrieve all from the database.
@@ -107,10 +105,7 @@ exports.update = (req, res) => {
           message: `Cannot update with id=${id}. Maybe Data was not found!`
         });
       } else {
-        const log = ({message: req.body.message, product: req.params.id, user: req.body.user,});
-        Log.create(log).then(datab => {
-          res.send({ message: "Updated successfully." });
-        }).catch(err =>{res.status(500).send({message:err.message}); });
+        res.send({ message: "Updated successfully." });
       }
     })
     .catch(err => {
