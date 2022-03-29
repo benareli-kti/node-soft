@@ -30,6 +30,7 @@ const Product = db.products;
 const Stockmove = db.stockmoves;
 const Qof = db.qofs;
 const Qop = db.qops;
+const Id = db.ids;
 
 db.mongoose
   .connect(`mongodb://${dbConfig.HOST}:${dbConfig.PORT}/${dbConfig.DB}`, {
@@ -239,6 +240,10 @@ function initial() {
       .save(err => {if (err) {console.log("error", err);}
         console.log("added 'admin' to roles collection");
       });
+      
+      new Id({pos_id: 1},{trans_id:1})
+      .save(err => {if (err) {console.log("error", err);}
+      console.log("added 'ids' to roles collection");
     }
   });
 
