@@ -23,6 +23,7 @@ exports.create = (req, res) => {
     botprice: req.body.botprice,
     cost: req.body.cost,
     qoh: req.body.qoh,
+    image: 'http://localhost:3000/images/' + req.file.filename,
     isStock: req.body.isStock ? req.body.isStock : false,
     category: req.body.category,
     brand: req.body.brand,

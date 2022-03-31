@@ -9,6 +9,7 @@ module.exports = mongoose => {
       cost: Number,
       isStock: Boolean,
       qoh: Number,
+      image: String,
       category: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "ProductCat"

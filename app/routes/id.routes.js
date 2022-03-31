@@ -4,10 +4,10 @@ module.exports = app => {
   var routerId = require("express").Router();
 
   // Retrieve all
-  routerId.get("/", logs.findAll);
+  routerId.get("/", ids.findAll);
 
   // Update with id
-  routerId.put("/:id", logs.update);
+  routerId.put("/:id", ids.update);
 
   app.use("/api/ids", routerId);
 };

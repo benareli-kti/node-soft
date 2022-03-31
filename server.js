@@ -1,4 +1,7 @@
+require('dotenv').config();
+
 const express = require("express");
+const bodyParser = require('body-parser');
 const cors = require("cors");
 const dbConfig = require("./app/config/db.config");
 const baseurl = require("./app/config/url.config");
@@ -35,7 +38,7 @@ const Ids = db.ids;
 db.mongoose
   .connect(`mongodb://${dbConfig.HOST}:${dbConfig.PORT}/${dbConfig.DB}`, {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
   })
   .then(() => {
     console.log("Successfully connect to MongoDB.");
