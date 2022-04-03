@@ -1,18 +1,16 @@
-require('dotenv').config();
-
 const express = require("express");
 const bodyParser = require('body-parser');
 const cors = require("cors");
 const dbConfig = require("./app/config/db.config");
 const baseurl = require("./app/config/url.config");
-
 const cron = require('node-cron');
-
 const app = express();
 
 var corsOptions = {
   origin: `http://${baseurl.baseurl}:8081`
 };
+
+global.__basedir = __dirname;
 
 app.use(cors(corsOptions));
 app.use(express.json());
@@ -55,6 +53,8 @@ app.get("/", cors(corsOptions), (req, res) => {
 });
 
 // routes
+require("./app/routes/file.routes")(app);
+
 require("./app/routes/id.routes")(app);
 require("./app/routes/log.routes")(app);
 require("./app/routes/useruser.routes")(app);

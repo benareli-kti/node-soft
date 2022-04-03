@@ -1,11 +1,10 @@
 module.exports = app => {
   const products = require("../controllers/product.controller.js");
-  const storage = require('../middlewares/storage');
 
   var routerProduct = require("express").Router();
 
   // Create a new
-  routerProduct.post("/", storage, products.create);
+  routerProduct.post("/", products.create);
 
   // Retrieve all
   routerProduct.get("/", products.findAll);
