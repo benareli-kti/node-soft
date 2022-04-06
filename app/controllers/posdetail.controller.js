@@ -15,17 +15,17 @@ exports.create = (req, res) => {
     return;
   }
 
-  const pos = ({
+  const posdetail = ({
     order_id: req.body.order_id,
-    date: req.body.date,
-    amount_untaxed: req.body.amount_untaxed,
-    amount_tax: req.body.amount_tax,
-    amount_total: req.body.amount_total,
-    partner: req.body.partner,
-    user: req.body.user,
-    open: req.body.open
+    qty: req.body.qty,
+    price_unit: req.body.price_unit,
+    discount: req.body.discount,
+    tax: req.body.tax,
+    subtotal: req.body.subtotal,
+    product: req.body.product,
+    warehouse: req.body.warehouse,
   });
-  Pos.create(pos).then(dataa => { res.send(datab);});
+  Posdetail.create(posdetail).then(dataa => { res.send(datab);});
 };
 
 // Retrieve all from the database.
@@ -33,9 +33,9 @@ exports.findAll = (req, res) => {
   const order_id = req.query.order_id;
   var condition = order_id ? { order_id: { $regex: new RegExp(order_id), $options: "i" } } : {};
 
-  Pos.find(condition)
-    .populate({ path: 'partner', model: Partner })
-    .populate({ path: 'user', model: User })
+  Posdetail.find(condition)
+    .populate({ path: 'product', model: Product })
+    .populate({ path: 'warehouse', model: Warehouse })
     .then(data => {
       res.send(data);
     })
@@ -51,9 +51,9 @@ exports.findAll = (req, res) => {
 exports.findOne = (req, res) => {
   const id = req.params.id;
 
-  Pos.findById(id)
-    .populate({ path: 'partner', model: Partner })
-    .populate({ path: 'user', model: User })
+  Posdetail.findById(id)
+    .populate({ path: 'product', model: Product })
+    .populate({ path: 'warehouse', model: Warehouse })
     .then(data => {
       if (!data)
         res.status(404).send({ message: "Not found Data with id " + id });
@@ -71,9 +71,9 @@ exports.findByDesc = (req, res) => {
   const order_id = req.query.order_id;
   var condition = order_id ? { order_id: { $regex: new RegExp(order_id), $options: "i" } } : {};
 
-  Pos.find(condition)
-    .populate({ path: 'partner', model: Partner })
-    .populate({ path: 'user', model: User })
+  Posdetail.find(condition)
+    .populate({ path: 'product', model: Product })
+    .populate({ path: 'warehouse', model: Warehouse })
     .then(data => {
       res.send(data);
     })
@@ -95,7 +95,7 @@ exports.update = (req, res) => {
 
   const id = req.params.id;
 
-  Pos.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
+  Posdetail.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
     .then(data => {
       if (!data) {
         res.status(404).send({
@@ -116,7 +116,7 @@ exports.update = (req, res) => {
 exports.delete = (req, res) => {
   const id = req.params.id;
 
-  Pos.findByIdAndRemove(id, { useFindAndModify: false })
+  Posdetail.findByIdAndRemove(id, { useFindAndModify: false })
     .then(data => {
       if (!data) {
         res.status(404).send({
@@ -137,7 +137,7 @@ exports.delete = (req, res) => {
 
 // Delete all from the database.
 exports.deleteAll = (req, res) => {
-  Pos.deleteMany({})
+  Posdetail.deleteMany({})
     .then(data => {
       res.send({
         message: `${data.deletedCount} Data were deleted successfully!`

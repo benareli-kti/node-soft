@@ -67,6 +67,8 @@ require("./app/routes/partner.routes")(app);
 require("./app/routes/stockmove.routes")(app);
 require("./app/routes/qof.routes")(app);
 require("./app/routes/qop.routes")(app);
+require("./app/routes/pos.routes")(app);
+require("./app/routes/posdetail.routes")(app);
 
 require("./app/routes/auth.routes")(app);
 require("./app/routes/user.routes")(app);
@@ -251,7 +253,7 @@ function initial() {
       });
       ids.save(function(err){
         if (err) return console.error(err.stack)
-        console.log("added 'Ids' to warehouse collection");
+        console.log("added 'Ids' to ID collection");
       });
     }
   });
@@ -340,6 +342,7 @@ function ProductsCare() {
           listprice: 1,
           qoh: 0,
           isStock: true,
+          image: "default.png",
           category: prodcat._id,
           active: true
         });
