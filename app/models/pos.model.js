@@ -3,6 +3,8 @@ module.exports = mongoose => {
     {
       order_id: String,
       date: String,
+      disc_type: String,
+      discount: Number,
       amount_untaxed: Number,
       amount_tax: Number,
       amount_total: Number,

@@ -1,9 +1,9 @@
 module.exports = mongoose => {
   var schema = mongoose.Schema(
     {
+      prefix: Number,
+      code: String,
       name: String,
-      short: String,
-      main: Boolean,
       active: Boolean
     },
     { timestamps: true }
@@ -13,6 +13,6 @@ module.exports = mongoose => {
     object.id = _id;
     return object;
   });
-  const Warehouse = mongoose.model("warehouses", schema);
-  return Warehouse;
+  const Coa = mongoose.model("coas", schema);
+  return Coa;
 };

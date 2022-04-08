@@ -2,7 +2,8 @@ module.exports = mongoose => {
   var schema = mongoose.Schema(
     {
       pos_id: Number,
-      transfer_id: Number
+      transfer_id: Number,
+      journal_id: Number,
     },
     { timestamps: true }
   );

@@ -11,7 +11,8 @@ exports.create = (req, res) => {
     return;
   }
 
-  const warehouse = ({name: req.body.name, short: req.body.short, active: req.body.active ? req.body.active : false});
+  const warehouse = ({name: req.body.name, short: req.body.short, 
+    main: req.body.main ? req.body.main : false, active: req.body.active ? req.body.active : false});
   Warehouse.create(warehouse).then(dataa => {
     const log = ({message: "add", warehouse: dataa._id, user: req.body.user,});
     Log.create(log).then(datab => {
@@ -143,6 +144,20 @@ exports.deleteAll = (req, res) => {
 // Find all active
 exports.findAllActive = (req, res) => {
   Warehouse.find({ active: true })
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving data."
+      });
+    });
+};
+
+// Find main
+exports.findMain = (req, res) => {
+  Warehouse.find({ main: true })
     .then(data => {
       res.send(data);
     })

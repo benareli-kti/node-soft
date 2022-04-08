@@ -12,6 +12,9 @@ module.exports = app => {
   // Retrieve all active
   routerWh.get("/active", warehouses.findAllActive);
 
+  // Retrieve all active
+  routerWh.get("/main", warehouses.findMain);
+
   // Retrieve a single
   routerWh.get("/:id", warehouses.findOne);
 

@@ -32,6 +32,7 @@ const Stockmove = db.stockmoves;
 const Qof = db.qofs;
 const Qop = db.qops;
 const Ids = db.ids;
+const Coa = db.coas;
 
 db.mongoose
   .connect(`mongodb://${dbConfig.HOST}:${dbConfig.PORT}/${dbConfig.DB}`, {
@@ -48,7 +49,6 @@ db.mongoose
   });
 
 app.get("/", cors(corsOptions), (req, res) => {
-  //res.json({ message: "Welcome to bezkoder application." });
   res.status(200).send("Welcome");
 });
 
@@ -258,6 +258,12 @@ function initial() {
     }
   });
 
+  Coa.estimatedDocumentCount((err, count) => {
+    if (!err && count === 0) {
+      CoaCare();
+    }
+  });
+
   Warehouse.estimatedDocumentCount((err, count) => {
     if (!err && count === 0) {
       WarehouseCare();
@@ -277,10 +283,47 @@ function initial() {
   });
 }
 
+function CoaCare() {
+  var c11001 = new Coa({prefix: 1,code: "1-1001",name: "Kas",active: true});
+  c11001.save(function(err){if (err) return console.error(err.stack)});
+  var c11101 = new Coa({prefix: 1,code: "1-1101",name: "Bank",active: true});
+  c11101.save(function(err){if (err) return console.error(err.stack)});
+  var c11111 = new Coa({prefix: 1,code: "1-1111",name: "Settlement",active: true});
+  c11111.save(function(err){if (err) return console.error(err.stack)});
+  var c12001 = new Coa({prefix: 1,code: "1-2001",name: "Piutang",active: true});
+  c12001.save(function(err){if (err) return console.error(err.stack)});
+  var c13001 = new Coa({prefix: 1,code: "1-3001",name: "PPN Masukan",active: true});
+  c13001.save(function(err){if (err) return console.error(err.stack)});
+  var c15001 = new Coa({prefix: 1,code: "1-5001",name: "Aktiva Tetap",active: true});
+  c15001.save(function(err){if (err) return console.error(err.stack)});
+  var c21001 = new Coa({prefix: 2,code: "2-1001",name: "Hutang Dagang",active: true});
+  c21001.save(function(err){if (err) return console.error(err.stack)});
+  var c22001 = new Coa({prefix: 2,code: "2-1001",name: "Hutang Lainnya",active: true});
+  c22001.save(function(err){if (err) return console.error(err.stack)});
+  var c23001 = new Coa({prefix: 2,code: "2-3001",name: "PPN Keluaran",active: true});
+  c23001.save(function(err){if (err) return console.error(err.stack)});
+  var c31001 = new Coa({prefix: 3,code: "3-1001",name: "Modal",active: true});
+  c31001.save(function(err){if (err) return console.error(err.stack)});
+  var c34001 = new Coa({prefix: 3,code: "3-4001",name: "Laba Rugi",active: true});
+  c34001.save(function(err){if (err) return console.error(err.stack)});
+  var c41001 = new Coa({prefix: 4,code: "4-1001",name: "Pendapatan",active: true});
+  c41001.save(function(err){if (err) return console.error(err.stack)});
+  var c51001 = new Coa({prefix: 5,code: "5-1001",name: "HPP",active: true});
+  c51001.save(function(err){if (err) return console.error(err.stack)});
+  var c61001 = new Coa({prefix: 6,code: "6-1001",name: "Biaya Operasional",active: true});
+  c61001.save(function(err){if (err) return console.error(err.stack)});
+  var c62001 = new Coa({prefix: 6,code: "6-1001",name: "Biaya Variabel",active: true});
+  c62001.save(function(err){if (err) return console.error(err.stack)});
+  var c69001 = new Coa({prefix: 6,code: "6-9001",name: "Biaya Lain Lain",active: true});
+  c69001.save(function(err){if (err) return console.error(err.stack)});
+  console.log("COA is added");
+}
+
 function WarehouseCare() {
   var warehouse = new Warehouse({
         name: "Gudang Utama",
         short: "UTAMA",
+        main: true,
         active: true
       });
   warehouse.save(function(err){

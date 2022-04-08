@@ -15,17 +15,36 @@ exports.create = (req, res) => {
     return;
   }
 
-  const pos = ({
-    order_id: req.body.order_id,
-    date: req.body.date,
-    amount_untaxed: req.body.amount_untaxed,
-    amount_tax: req.body.amount_tax,
-    amount_total: req.body.amount_total,
-    partner: req.body.partner,
-    user: req.body.user,
-    open: req.body.open
-  });
-  Pos.create(pos).then(dataa => { res.send(datab);});
+  if(req.body.partner != "null"){
+    const pos = ({
+      order_id: req.body.order_id,
+      date: req.body.date,
+      disc_type: req.body.disc_type,
+      discount: req.body.discount,
+      amount_untaxed: req.body.amount_untaxed,
+      amount_tax: req.body.amount_tax,
+      amount_total: req.body.amount_total,
+      partner: req.body.partner,
+      user: req.body.user,
+      open: req.body.open
+    });
+    Pos.create(pos).then(dataa => { res.send(dataa);});
+  }
+  else if(req.body.partner == "null"){
+    const pos = ({
+      order_id: req.body.order_id,
+      date: req.body.date,
+      disc_type: req.body.disc_type,
+      discount: req.body.discount,
+      amount_untaxed: req.body.amount_untaxed,
+      amount_tax: req.body.amount_tax,
+      amount_total: req.body.amount_total,
+      user: req.body.user,
+      open: req.body.open
+    });
+    Pos.create(pos).then(dataa => { res.send(dataa);});
+  }
+
 };
 
 // Retrieve all from the database.

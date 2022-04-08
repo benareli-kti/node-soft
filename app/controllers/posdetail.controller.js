@@ -1,10 +1,7 @@
 const db = require("../models");
 const Pos = db.poss;
 const Posdetail = db.posdetails;
-const Brand = db.brands;
-const Partner = db.partners;
-const Log = db.logs;
-const User = db.users;
+const Qof = db.qofs;
 const mongoose = require("mongoose");
 
 // Create and Save new
@@ -14,18 +11,40 @@ exports.create = (req, res) => {
     res.status(400).send({ message: "Content can not be empty!" });
     return;
   }
-
-  const posdetail = ({
-    order_id: req.body.order_id,
-    qty: req.body.qty,
-    price_unit: req.body.price_unit,
-    discount: req.body.discount,
-    tax: req.body.tax,
-    subtotal: req.body.subtotal,
-    product: req.body.product,
-    warehouse: req.body.warehouse,
-  });
-  Posdetail.create(posdetail).then(dataa => { res.send(datab);});
+  if(req.body.isStock=="true"){
+    const posdetail = ({
+      order_id: req.body.order_id,
+      qty: req.body.qty,
+      price_unit: req.body.price_unit,
+      subtotal: req.body.subtotal,
+      product: req.body.product,
+      warehouse: req.body.warehouse
+    });
+    Posdetail.create(posdetail).then(dataa => { 
+      const pos1 = Pos.findOneAndUpdate({_id:req.body.ids}, {$push: {pos_detail: dataa._id}}, { new: true })
+        .then(datab => { 
+          const qof1 = ({qof: 0-Number(req.body.qty), product: req.body.product, warehouse: req.body.warehouse});
+            Qof.create(qof1).then(datac => {
+              res.send(datac);
+            });
+        });
+    });
+  }else if(req.body.isStock=="false"){
+    const posdetail = ({
+      order_id: req.body.order_id,
+      qty: req.body.qty,
+      price_unit: req.body.price_unit,
+      subtotal: req.body.subtotal,
+      product: req.body.product,
+      warehouse: req.body.warehouse
+    });
+    Posdetail.create(posdetail).then(dataa => { 
+      const pos1 = Pos.findOneAndUpdate({_id:req.body.ids}, {$push: {pos_detail: dataa._id}}, { new: true })
+        .then(datab => { 
+          res.send(datab);
+        });
+    });
+  }
 };
 
 // Retrieve all from the database.

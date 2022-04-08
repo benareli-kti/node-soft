@@ -41,7 +41,6 @@ exports.createUpdate = (req, res) => {
           const qopp = ({product: req.body.product, partner: req.body.partner, warehouse: req.body.warehouse, qop: 0});
           Qop.create(qopp).then(dataa => {
             var qopid = dataa._id;
-            console.log(qopid);
             const prod1 = Product.findOneAndUpdate({_id:req.body.product}, {$push: {qop: dataa._id}}, { new: true })
               .then(datab => {
                 const prod2 = Product.find({_id:req.body.product})
