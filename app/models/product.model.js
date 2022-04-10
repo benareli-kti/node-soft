@@ -14,6 +14,14 @@ module.exports = mongoose => {
         type: mongoose.Schema.Types.ObjectId,
         ref: "ProductCat"
       },
+      taxin: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Tax"
+      },
+      taxout: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Tax"
+      },
       brand: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Brand"

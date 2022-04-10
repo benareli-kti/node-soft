@@ -5,6 +5,7 @@ const Brand = db.brands;
 const Partner = db.partners;
 const Log = db.logs;
 const User = db.users;
+const Tax = db.taxs;
 const mongoose = require("mongoose");
 
 // Create and Save new
@@ -15,26 +16,95 @@ exports.create = (req, res) => {
     return;
   }
 
-  const product = ({
-    sku: req.body.sku,
-    name: req.body.name,
-    description: req.body.description,
-    listprice: req.body.listprice,
-    botprice: req.body.botprice,
-    cost: req.body.cost,
-    qoh: req.body.qoh,
-    image: req.body.image,
-    isStock: req.body.isStock ? req.body.isStock : false,
-    category: req.body.category,
-    brand: req.body.brand,
-    active: req.body.active ? req.body.active : false
-  });
-  Product.create(product).then(dataa => {
-    const log = ({message: "add", product: dataa._id, user: req.body.user,});
-    Log.create(log).then(datab => {
-      res.send(datab);
+  if(req.body.taxin==""){
+    const product = ({
+      sku: req.body.sku,
+      name: req.body.name,
+      description: req.body.description,
+      listprice: req.body.listprice,
+      botprice: req.body.botprice,
+      cost: req.body.cost,
+      qoh: req.body.qoh,
+      image: req.body.image,
+      isStock: req.body.isStock ? req.body.isStock : false,
+      category: req.body.category,
+      taxout: req.body.taxout,
+      brand: req.body.brand,
+      active: req.body.active ? req.body.active : false
+    });
+    Product.create(product).then(dataa => {
+      const log = ({message: "add", product: dataa._id, user: req.body.user,});
+      Log.create(log).then(datab => {
+        res.send(datab);
+      }).catch(err =>{res.status(500).send({message:err.message}); });
     }).catch(err =>{res.status(500).send({message:err.message}); });
-  }).catch(err =>{res.status(500).send({message:err.message}); });
+  }else if(req.body.taxout==""){
+    const product = ({
+      sku: req.body.sku,
+      name: req.body.name,
+      description: req.body.description,
+      listprice: req.body.listprice,
+      botprice: req.body.botprice,
+      cost: req.body.cost,
+      qoh: req.body.qoh,
+      image: req.body.image,
+      isStock: req.body.isStock ? req.body.isStock : false,
+      category: req.body.category,
+      taxin: req.body.taxin,
+      brand: req.body.brand,
+      active: req.body.active ? req.body.active : false
+    });
+    Product.create(product).then(dataa => {
+      const log = ({message: "add", product: dataa._id, user: req.body.user,});
+      Log.create(log).then(datab => {
+        res.send(datab);
+      }).catch(err =>{res.status(500).send({message:err.message}); });
+    }).catch(err =>{res.status(500).send({message:err.message}); });
+  }else if(req.body.taxout=="" && req.body.taxin==""){
+    const product = ({
+      sku: req.body.sku,
+      name: req.body.name,
+      description: req.body.description,
+      listprice: req.body.listprice,
+      botprice: req.body.botprice,
+      cost: req.body.cost,
+      qoh: req.body.qoh,
+      image: req.body.image,
+      isStock: req.body.isStock ? req.body.isStock : false,
+      category: req.body.category,
+      brand: req.body.brand,
+      active: req.body.active ? req.body.active : false
+    });
+    Product.create(product).then(dataa => {
+      const log = ({message: "add", product: dataa._id, user: req.body.user,});
+      Log.create(log).then(datab => {
+        res.send(datab);
+      }).catch(err =>{res.status(500).send({message:err.message}); });
+    }).catch(err =>{res.status(500).send({message:err.message}); });
+  }else{
+    const product = ({
+      sku: req.body.sku,
+      name: req.body.name,
+      description: req.body.description,
+      listprice: req.body.listprice,
+      botprice: req.body.botprice,
+      cost: req.body.cost,
+      qoh: req.body.qoh,
+      image: req.body.image,
+      isStock: req.body.isStock ? req.body.isStock : false,
+      category: req.body.category,
+      taxin: req.body.taxin,
+      taxout: req.body.taxout,
+      brand: req.body.brand,
+      active: req.body.active ? req.body.active : false
+    });
+    Product.create(product).then(dataa => {
+      const log = ({message: "add", product: dataa._id, user: req.body.user,});
+      Log.create(log).then(datab => {
+        res.send(datab);
+      }).catch(err =>{res.status(500).send({message:err.message}); });
+    }).catch(err =>{res.status(500).send({message:err.message}); });
+  }
 };
 
 // Retrieve all from the database.
@@ -103,8 +173,110 @@ exports.update = (req, res) => {
   }
 
   const id = req.params.id;
+  if (req.body.taxin==""){
+    Product.findByIdAndUpdate(id, {$unset: {taxin:1}}, { useFindAndModify: false })
+    .then(data => {});
+    Product.findByIdAndUpdate(id, {
+      sku: req.body.sku,
+        name: req.body.name,
+        description: req.body.description,
+        listprice: req.body.listprice,
+        botprice: req.body.botprice,
+        cost: req.body.cost,
+        image: req.body.image,
+        isStock: req.body.isStock ? req.body.isStock : false,
+        category: req.body.category,
+        taxout: req.body.taxout,
+        brand: req.body.brand,
+        active: req.body.active ? req.body.active : false
+        },{ useFindAndModify: false })
+      .then(data => {
+        if (!data) {
+          res.status(404).send({
+          message: `Cannot update with id=${id}. Maybe Data was not found!`
+          });
+        } else {
+          const log = ({message: req.body.message, product: req.params.id, user: req.body.user,});
+          Log.create(log).then(datab => {
+            res.send({ message: "Updated successfully." });
+          }).catch(err =>{res.status(500).send({message:err.message}); });
+        }
+      })
+      .catch(err => {
+        res.status(500).send({
+          message: "Error updating with id=" + id
+        });
+    });
+  }else if (req.body.taxout==""){
+    Product.findByIdAndUpdate(id, {$unset: {taxout:1}}, { useFindAndModify: false })
+    .then(data => {});
+    Product.findByIdAndUpdate(id, {
+      sku: req.body.sku,
+        name: req.body.name,
+        description: req.body.description,
+        listprice: req.body.listprice,
+        botprice: req.body.botprice,
+        cost: req.body.cost,
+        image: req.body.image,
+        isStock: req.body.isStock ? req.body.isStock : false,
+        category: req.body.category,
+        taxin: req.body.taxin,
+        brand: req.body.brand,
+        active: req.body.active ? req.body.active : false
+        },{ useFindAndModify: false })
+      .then(data => {
+        if (!data) {
+          res.status(404).send({
+          message: `Cannot update with id=${id}. Maybe Data was not found!`
+          });
+        } else {
+          const log = ({message: req.body.message, product: req.params.id, user: req.body.user,});
+          Log.create(log).then(datab => {
+            res.send({ message: "Updated successfully." });
+          }).catch(err =>{res.status(500).send({message:err.message}); });
+        }
+      })
+      .catch(err => {
+        res.status(500).send({
+          message: "Error updating with id=" + id
+        });
+    });
+  }else if (req.body.taxout=="" && req.body.taxin==""){
+    Product.findByIdAndUpdate(id, {$unset: {taxout:1,taxin:1}}, { useFindAndModify: false })
+    .then(data => {});
+    Product.findByIdAndUpdate(id, {
+      sku: req.body.sku,
+        name: req.body.name,
+        description: req.body.description,
+        listprice: req.body.listprice,
+        botprice: req.body.botprice,
+        cost: req.body.cost,
+        image: req.body.image,
+        isStock: req.body.isStock ? req.body.isStock : false,
+        category: req.body.category,
+        brand: req.body.brand,
+        active: req.body.active ? req.body.active : false
+        },{ useFindAndModify: false })
+      .then(data => {
+        if (!data) {
+          res.status(404).send({
+          message: `Cannot update with id=${id}. Maybe Data was not found!`
+          });
+        } else {
+          const log = ({message: req.body.message, product: req.params.id, user: req.body.user,});
+          Log.create(log).then(datab => {
+            res.send({ message: "Updated successfully." });
+          }).catch(err =>{res.status(500).send({message:err.message}); });
+        }
+      })
+      .catch(err => {
+        res.status(500).send({
+          message: "Error updating with id=" + id
+        });
+    });
+  }else{
 
-  Product.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
+    Product.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
     .then(data => {
       if (!data) {
         res.status(404).send({
@@ -122,6 +294,7 @@ exports.update = (req, res) => {
         message: "Error updating with id=" + id
       });
     });
+  }
 };
 
 // Delete with the specified id in the request
@@ -168,6 +341,8 @@ exports.findAllActive = (req, res) => {
   Product.find({ active: true })
     .populate({ path: 'category', model: ProductCat })
     .populate({ path: 'brand', model: Brand })
+    .populate({ path: 'taxin', model: Tax })
+    .populate({ path: 'taxout', model: Tax })
     .then(data => {
       res.send(data);
     })

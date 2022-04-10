@@ -1,7 +1,6 @@
 const db = require("../models");
 const Pos = db.poss;
-const Posdetail = db.posdetails;
-const Qof = db.qofs;
+const Payment = db.payments;
 const mongoose = require("mongoose");
 
 // Create and Save new
@@ -11,40 +10,28 @@ exports.create = (req, res) => {
     res.status(400).send({ message: "Content can not be empty!" });
     return;
   }
-  if(req.body.isStock=="true"){
+  if(req.body.payment2!="null"){
     const posdetail = ({
       order_id: req.body.order_id,
-      qty: req.body.qty,
-      price_unit: req.body.price_unit,
-      tax: req.body.tax,
-      subtotal: req.body.subtotal,
-      product: req.body.product,
-      warehouse: req.body.warehouse
+      payment1: req.body.payment1,
+      pay1method: req.body.pay1method,
+      payment2: req.body.payment2,
+      pay2method: req.body.pay2method,
+      change: req.body.change
     });
-    Posdetail.create(posdetail).then(dataa => { 
-      const pos1 = Pos.findOneAndUpdate({_id:req.body.ids}, {$push: {pos_detail: dataa._id}}, { new: true })
-        .then(datab => { 
-          const qof1 = ({qof: 0-Number(req.body.qty), product: req.body.product, warehouse: req.body.warehouse});
-            Qof.create(qof1).then(datac => {
-              res.send(datac);
-            });
-        });
+    Payment.create(posdetail).then(dataa => { 
+      
+              res.send(dataa);
     });
-  }else if(req.body.isStock=="false"){
+  }else if(req.body.payment2=="null"){
     const posdetail = ({
       order_id: req.body.order_id,
-      qty: req.body.qty,
-      price_unit: req.body.price_unit,
-      tax: req.body.tax,
-      subtotal: req.body.subtotal,
-      product: req.body.product,
-      warehouse: req.body.warehouse
+      payment1: req.body.payment1,
+      pay1method: req.body.pay1method,
+      change: req.body.change
     });
-    Posdetail.create(posdetail).then(dataa => { 
-      const pos1 = Pos.findOneAndUpdate({_id:req.body.ids}, {$push: {pos_detail: dataa._id}}, { new: true })
-        .then(datab => { 
-          res.send(datab);
-        });
+    Payment.create(posdetail).then(dataa => { 
+      res.send(dataa);
     });
   }
 };
@@ -54,9 +41,7 @@ exports.findAll = (req, res) => {
   const order_id = req.query.order_id;
   var condition = order_id ? { order_id: { $regex: new RegExp(order_id), $options: "i" } } : {};
 
-  Posdetail.find(condition)
-    .populate({ path: 'product', model: Product })
-    .populate({ path: 'warehouse', model: Warehouse })
+  Payment.find(condition)
     .then(data => {
       res.send(data);
     })
@@ -72,9 +57,7 @@ exports.findAll = (req, res) => {
 exports.findOne = (req, res) => {
   const id = req.params.id;
 
-  Posdetail.findById(id)
-    .populate({ path: 'product', model: Product })
-    .populate({ path: 'warehouse', model: Warehouse })
+  Payment.findById(id)
     .then(data => {
       if (!data)
         res.status(404).send({ message: "Not found Data with id " + id });
@@ -92,9 +75,7 @@ exports.findByDesc = (req, res) => {
   const order_id = req.query.order_id;
   var condition = order_id ? { order_id: { $regex: new RegExp(order_id), $options: "i" } } : {};
 
-  Posdetail.find(condition)
-    .populate({ path: 'product', model: Product })
-    .populate({ path: 'warehouse', model: Warehouse })
+  Payment.find(condition)
     .then(data => {
       res.send(data);
     })
@@ -116,7 +97,7 @@ exports.update = (req, res) => {
 
   const id = req.params.id;
 
-  Posdetail.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
+  Payment.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
     .then(data => {
       if (!data) {
         res.status(404).send({
@@ -137,7 +118,7 @@ exports.update = (req, res) => {
 exports.delete = (req, res) => {
   const id = req.params.id;
 
-  Posdetail.findByIdAndRemove(id, { useFindAndModify: false })
+  Payment.findByIdAndRemove(id, { useFindAndModify: false })
     .then(data => {
       if (!data) {
         res.status(404).send({
@@ -158,7 +139,7 @@ exports.delete = (req, res) => {
 
 // Delete all from the database.
 exports.deleteAll = (req, res) => {
-  Posdetail.deleteMany({})
+  Payment.deleteMany({})
     .then(data => {
       res.send({
         message: `${data.deletedCount} Data were deleted successfully!`

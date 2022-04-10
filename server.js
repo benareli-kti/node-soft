@@ -33,6 +33,7 @@ const Qof = db.qofs;
 const Qop = db.qops;
 const Ids = db.ids;
 const Coa = db.coas;
+const Tax = db.taxs;
 
 db.mongoose
   .connect(`mongodb://${dbConfig.HOST}:${dbConfig.PORT}/${dbConfig.DB}`, {
@@ -59,6 +60,7 @@ require("./app/routes/id.routes")(app);
 require("./app/routes/log.routes")(app);
 require("./app/routes/useruser.routes")(app);
 require("./app/routes/userrole.routes")(app);
+require("./app/routes/tax.routes")(app);
 require("./app/routes/product.routes")(app);
 require("./app/routes/productcat.routes")(app);
 require("./app/routes/brand.routes")(app);
@@ -363,19 +365,26 @@ function PartnerCare() {
 }
 
 function ProductsCare() {
-  var prodcat = new ProductCat({
+  var tax = new Tax({
+        tax: 11,
+        name: "PPN 11%"
+      });
+  tax.save(function(err){
+    if (err) return console.error(err.stack)
+    console.log("added 'PPN' to tax collection");
+    var prodcat = new ProductCat({
         catid: "TEMP",
         description: "Template",
         active: true
       });
-  prodcat.save(function(err){
-    if (err) return console.error(err.stack)
-    console.log("added 'Template' to product category collection");
-    var logPC = new Log({
+    prodcat.save(function(err){
+      if (err) return console.error(err.stack)
+      console.log("added 'Template' to product category collection");
+      var logPC = new Log({
         message: "added by system",
         category: prodcat._id
-    });
-    logPC.save(function(err){
+      });
+      logPC.save(function(err){
         if(err) return console.error(err.stack)
         console.log("Log is added");
         var prod = new Product({
@@ -387,6 +396,8 @@ function ProductsCare() {
           isStock: true,
           image: "default.png",
           category: prodcat._id,
+          taxin: tax._id,
+          taxout: tax._id,
           active: true
         });
         prod.save(function(err){
@@ -400,7 +411,9 @@ function ProductsCare() {
             if(err) return console.error(err.stack)
             console.log("Log is added")
           });
+        });
       });
     });
   });
+  
 }

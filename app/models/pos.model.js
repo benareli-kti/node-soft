@@ -20,6 +20,10 @@ module.exports = mongoose => {
         {type: mongoose.Schema.Types.ObjectId,
         ref: "Posdetail"}
       ],
+      payment:[
+        {type: mongoose.Schema.Types.ObjectId,
+        ref: "Payment"}
+      ],
       open: Boolean,
     },
     { timestamps: true }
