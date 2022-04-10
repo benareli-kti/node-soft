@@ -17,6 +17,7 @@ db.qofs = require("./qof.model.js")(mongoose);
 db.qops = require("./qop.model.js")(mongoose);
 db.poss = require("./pos.model.js")(mongoose);
 db.posdetails = require("./posdetail.model.js")(mongoose);
+db.payments = require("./payment.model.js")(mongoose);
 db.coas = require("./coa.model.js")(mongoose);
 db.taxs = require("./tax.model.js")(mongoose);
 db.journals = require("./journal.model.js")(mongoose);

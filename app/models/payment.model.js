@@ -5,9 +5,12 @@ module.exports = mongoose => {
       amount_total: Number,
       payment1: Number,
       pay1method: String,
+      pay1note: String,
       payment2: Number,
       pay2method: String,
-      change: Number
+      pay2note: String,
+      change: Number,
+      changeMethod: String
     },
     { timestamps: true }
   );

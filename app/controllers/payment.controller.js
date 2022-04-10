@@ -13,11 +13,15 @@ exports.create = (req, res) => {
   if(req.body.payment2!="null"){
     const posdetail = ({
       order_id: req.body.order_id,
+      amount_total: req.body.amount_total,
       payment1: req.body.payment1,
       pay1method: req.body.pay1method,
+      pay1note: req.body.pay1note,
       payment2: req.body.payment2,
       pay2method: req.body.pay2method,
-      change: req.body.change
+      pay2note: req.body.pay2note,
+      change: req.body.change,
+      changeMethod: req.body.changeMethod
     });
     Payment.create(posdetail).then(dataa => { 
       
@@ -26,9 +30,12 @@ exports.create = (req, res) => {
   }else if(req.body.payment2=="null"){
     const posdetail = ({
       order_id: req.body.order_id,
+      amount_total: req.body.amount_total,
       payment1: req.body.payment1,
       pay1method: req.body.pay1method,
-      change: req.body.change
+      pay1note: req.body.pay1note,
+      change: req.body.change,
+      changeMethod: req.body.changeMethod
     });
     Payment.create(posdetail).then(dataa => { 
       res.send(dataa);
