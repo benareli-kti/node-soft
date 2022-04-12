@@ -5,6 +5,7 @@ const db = {};
 
 db.mongoose = mongoose;
 
+db.settings = require("./setting.model.js")(mongoose);
 db.logs = require("./log.model.js")(mongoose);
 db.ids = require("./id.model.js")(mongoose);
 db.products = require("./product.model.js")(mongoose);
@@ -15,6 +16,7 @@ db.partners = require("./partner.model.js")(mongoose);
 db.stockmoves = require("./stockmove.model.js")(mongoose);
 db.qofs = require("./qof.model.js")(mongoose);
 db.qops = require("./qop.model.js")(mongoose);
+db.possessions = require("./possession.model.js")(mongoose);
 db.poss = require("./pos.model.js")(mongoose);
 db.posdetails = require("./posdetail.model.js")(mongoose);
 db.payments = require("./payment.model.js")(mongoose);

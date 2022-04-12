@@ -2,6 +2,7 @@ const db = require("../models");
 const Pos = db.poss;
 const Posdetail = db.posdetails;
 const Qof = db.qofs;
+const Stockmove = db.stockmoves;
 const mongoose = require("mongoose");
 
 // Create and Save new
@@ -22,11 +23,32 @@ exports.create = (req, res) => {
       warehouse: req.body.warehouse
     });
     Posdetail.create(posdetail).then(dataa => { 
-      const pos1 = Pos.findOneAndUpdate({_id:req.body.ids}, {$push: {pos_detail: dataa._id}}, { new: true })
+      const pos1 = Pos.findOneAndUpdate({_id:req.body.ids}, {$push: {pos_detail: dataa._id}}, { useFindAndModify: false })
         .then(datab => { 
           const qof1 = ({qof: 0-Number(req.body.qty), product: req.body.product, warehouse: req.body.warehouse});
             Qof.create(qof1).then(datac => {
-              res.send(datac);
+              if(req.body.partner=="null"){
+                const stockmove = ({
+                  user: req.body.user,
+                  product: req.body.product,
+                  warehouse: req.body.warehouse,
+                  qout: req.body.qty
+                });
+                Stockmove.create(stockmove).then(datad => {res.send(datad);}).catch(err => {res.status(500).send({message:
+                  err.message || "Some error occurred while creating the Data."});
+                  });
+              }else if(req.body.partner!="null"){
+                const stockmove = ({
+                  user: req.body.user,
+                  product: req.body.product,
+                  partner: req.body.partner,
+                  warehouse: req.body.warehouse,
+                  qout: req.body.qty
+                });
+                Stockmove.create(stockmove).then(datad => {res.send(datad);}).catch(err => {res.status(500).send({message:
+                  err.message || "Some error occurred while creating the Data."});
+                  });
+              }
             });
         });
     });
@@ -41,7 +63,7 @@ exports.create = (req, res) => {
       warehouse: req.body.warehouse
     });
     Posdetail.create(posdetail).then(dataa => { 
-      const pos1 = Pos.findOneAndUpdate({_id:req.body.ids}, {$push: {pos_detail: dataa._id}}, { new: true })
+      const pos1 = Pos.findOneAndUpdate({_id:req.body.ids}, {$push: {pos_detail: dataa._id}}, { useFindAndModify: false })
         .then(datab => { 
           res.send(datab);
         });

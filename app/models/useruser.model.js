@@ -7,8 +7,8 @@ module.exports = mongoose => {
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Role"
-      }
-    ]
+      }],
+      pos_open: Boolean
     },
     { timestamps: true }
   );

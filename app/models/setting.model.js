@@ -1,18 +1,18 @@
 module.exports = mongoose => {
   var schema = mongoose.Schema(
     {
-      pos_id: Number,
-      pos_session: Number,
-      transfer_id: Number,
-      journal_id: Number,
-    },
-    { timestamps: true }
+      comp_name: String,
+      comp_addr: String,
+      comp_phone: String,
+      comp_email: String,
+      pos_shift: Boolean
+    }
   );
   schema.method("toJSON", function() {
     const { __v, _id, ...object } = this.toObject();
     object.id = _id;
     return object;
   });
-  const Id = mongoose.model("ids", schema);
-  return Id;
+  const Setting = mongoose.model("settings", schema);
+  return Setting;
 };

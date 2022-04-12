@@ -1,5 +1,6 @@
 const db = require("../models");
 const Pos = db.poss;
+const Possession = db.possessions;
 const Payment = db.payments;
 const mongoose = require("mongoose");
 
@@ -24,8 +25,18 @@ exports.create = (req, res) => {
       changeMethod: req.body.changeMethod
     });
     Payment.create(posdetail).then(dataa => { 
-      
-              res.send(dataa);
+      if(req.body.session!="null"){
+        const possF = Possession.find({_id:req.body.session})
+          .then(posf => {
+          const poss1 = Possession.findOneAndUpdate({_id:req.body.session}, 
+            {$push: {payment: dataa._id}}, { useFindAndModify: false })
+              .then(datab => {
+                res.send(datab);
+              });
+          });
+      }else{
+        res.send(dataa);
+      }
     });
   }else if(req.body.payment2=="null"){
     const posdetail = ({
@@ -38,7 +49,18 @@ exports.create = (req, res) => {
       changeMethod: req.body.changeMethod
     });
     Payment.create(posdetail).then(dataa => { 
-      res.send(dataa);
+      if(req.body.session!="null"){
+        const possF = Possession.find({_id:req.body.session})
+          .then(posf => {
+          const poss1 = Possession.findOneAndUpdate({_id:req.body.session}, 
+            {$push: {payment: dataa._id}}, { useFindAndModify: false })
+              .then(datab => {
+                res.send(datab);
+              });
+          });
+      }else{
+        res.send(dataa);
+      }
     });
   }
 };

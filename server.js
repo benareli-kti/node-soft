@@ -23,7 +23,10 @@ app.use((req, res, next)=>{
 
 const db = require("./app/models");
 const Role = db.role;
+const Setting = db.settings;
+const Ids = db.ids;
 const Log = db.logs;
+
 const Warehouse = db.warehouses;
 const ProductCat = db.productcats;
 const Partner = db.partners;
@@ -31,7 +34,6 @@ const Product = db.products;
 const Stockmove = db.stockmoves;
 const Qof = db.qofs;
 const Qop = db.qops;
-const Ids = db.ids;
 const Coa = db.coas;
 const Tax = db.taxs;
 
@@ -57,6 +59,7 @@ app.get("/", cors(corsOptions), (req, res) => {
 require("./app/routes/file.routes")(app);
 
 require("./app/routes/id.routes")(app);
+require("./app/routes/setting.routes")(app);
 require("./app/routes/log.routes")(app);
 require("./app/routes/useruser.routes")(app);
 require("./app/routes/userrole.routes")(app);
@@ -69,8 +72,10 @@ require("./app/routes/partner.routes")(app);
 require("./app/routes/stockmove.routes")(app);
 require("./app/routes/qof.routes")(app);
 require("./app/routes/qop.routes")(app);
+require("./app/routes/possession.routes")(app);
 require("./app/routes/pos.routes")(app);
 require("./app/routes/posdetail.routes")(app);
+require("./app/routes/payment.routes")(app);
 
 require("./app/routes/auth.routes")(app);
 require("./app/routes/user.routes")(app);
@@ -107,7 +112,7 @@ function withPartner(prod1, part1, wh1) {
       var qop1 = {product: prod1, partner: part1, warehouse: wh1, qop: 0};
       Qop.create(qop1).then(res => {
         let qop1 = res._id;
-        const prod2 = Product.findOneAndUpdate({_id:prod1}, {$push: {qop: res._id}}, { new: true })
+        const prod2 = Product.findOneAndUpdate({_id:prod1}, {$push: {qop: res._id}}, { useFindAndModify: false })
           .then(res => {
             withPartnerCalc(qop1, prod1, part1, wh1);
           }).catch(error => console.error(error));
@@ -165,7 +170,7 @@ function withoutPartner(proda, wha){
       var qopaa = {product: proda, warehouse: wha, qop: 0};
       Qop.create(qopaa).then(res => {
         let qopa = res._id;
-        const prodA = Product.findOneAndUpdate({_id:proda}, {$push: {qop: res._id}}, { new: true })
+        const prodA = Product.findOneAndUpdate({_id:proda}, {$push: {qop: res._id}}, { useFindAndModify: false })
           .then(res => {
             withoutPartnerCalc(qopa, proda, wha);
           }).catch(error => console.error(error));
@@ -251,11 +256,24 @@ function initial() {
       
       var ids = new Ids({
         pos_id: 1,
+        pos_session: 1,
         transfer_id: 1
       });
       ids.save(function(err){
         if (err) return console.error(err.stack)
         console.log("added 'Ids' to ID collection");
+      });
+
+      var settings = new Setting({
+        comp_name: "Soft Solution",
+        comp_addr: "",
+        comp_phone: "",
+        comp_email: "",
+        pos_shift: false
+      });
+      settings.save(function(err){
+        if (err) return console.error(err.stack)
+        console.log("added Setting collection");
       });
     }
   });

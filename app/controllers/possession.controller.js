@@ -1,88 +1,45 @@
 const db = require("../models");
-const Pos = db.poss;
-const Posdetail = db.posdetails;
 const Possession = db.possessions;
-const Brand = db.brands;
-const Partner = db.partners;
-const Log = db.logs;
+const Pos = db.poss;
+const Payment = db.payments;
 const User = db.users;
 const mongoose = require("mongoose");
 
 // Create and Save new
 exports.create = (req, res) => {
   // Validate request
-  if (!req.body.order_id) {
+  if (!req.body.session_id) {
     res.status(400).send({ message: "Content can not be empty!" });
     return;
   }
 
-  if(req.body.partner != "null"){
-    const pos = ({
-      order_id: req.body.order_id,
-      date: req.body.date,
-      disc_type: req.body.disc_type,
-      discount: req.body.discount,
-      amount_untaxed: req.body.amount_untaxed,
-      amount_tax: req.body.amount_tax,
-      amount_total: req.body.amount_total,
-      partner: req.body.partner,
-      user: req.body.user,
-      open: req.body.open,
-      payment: [req.body.payment]
-    });
-    Pos.create(pos).then(dataa => { 
-      if(req.body.session!="null"){
-        const possF = Possession.find({_id:req.body.session})
-          .then(posf => {
-          const poss1 = Possession.findOneAndUpdate({_id:req.body.session}, 
-            {$push: {pos: dataa._id}}, { useFindAndModify: false })
-              .then(datab => {
-                res.send(datab);
-              });
-          });
-      }else{
-        res.send(dataa);
-      }
-    });
-  }
-  else if(req.body.partner == "null"){
-    const pos = ({
-      order_id: req.body.order_id,
-      date: req.body.date,
-      disc_type: req.body.disc_type,
-      discount: req.body.discount,
-      amount_untaxed: req.body.amount_untaxed,
-      amount_tax: req.body.amount_tax,
-      amount_total: req.body.amount_total,
-      user: req.body.user,
-      open: req.body.open,
-      payment: [req.body.payment]
-    });
-    Pos.create(pos).then(dataa => {
-      if(req.body.session!="null"){
-        const possF = Possession.find({_id:req.body.session})
-          .then(posf => {
-          const poss1 = Possession.findOneAndUpdate({_id:req.body.session}, 
-            {$push: {pos: dataa._id}}, { useFindAndModify: false })
-              .then(datab => {
-                //res.send(datab);
-              });
-          });
-      }else{
-        res.send(dataa);
-      }
-    });
-  }
+  const possession = ({
+    session_id: req.body.session_id,
+    time_open: req.body.time_open,
+    time_close: req.body.time_close,
+    shift: req.body.shift,
+    start_balance: req.body.start_balance,
+    end_balance: req.body.start_balance,
+    money_in: 0,
+    money_out: 0,
+    total_discount: 0,
+    total_amount_untaxed: 0,
+    total_amount_tax: 0,
+    total_amount_total: 0,
+    user: req.body.user,
+    open: req.body.open
+  });
+  Possession.create(possession).then(dataa => { res.send(dataa);});
 
 };
 
 // Retrieve all from the database.
 exports.findAll = (req, res) => {
-  const order_id = req.query.order_id;
-  var condition = order_id ? { order_id: { $regex: new RegExp(order_id), $options: "i" } } : {};
+  const session_id = req.query.session_id;
+  var condition = session_id ? { session_id: { $regex: new RegExp(session_id), $options: "i" } } : {};
 
-  Pos.find(condition)
-    .populate({ path: 'partner', model: Partner })
+  Possession.find(condition)
+    .populate({ path: 'pos', model: Pos })
     .populate({ path: 'user', model: User })
     .then(data => {
       res.send(data);
@@ -99,8 +56,9 @@ exports.findAll = (req, res) => {
 exports.findOne = (req, res) => {
   const id = req.params.id;
 
-  Pos.findById(id)
-    .populate({ path: 'partner', model: Partner })
+  Possession.findById(id)
+    .populate({ path: 'pos', model: Pos })
+    .populate({ path: 'payment', model: Payment })
     .populate({ path: 'user', model: User })
     .then(data => {
       if (!data)
@@ -114,13 +72,65 @@ exports.findOne = (req, res) => {
     });
 };
 
-// Find a single with an desc
-exports.findByDesc = (req, res) => {
-  const order_id = req.query.order_id;
-  var condition = order_id ? { order_id: { $regex: new RegExp(order_id), $options: "i" } } : {};
+// Find a single with an user
+exports.findByAllOpen = (req, res) => {
+  Possession.find({open: true})
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving data."
+      });
+    });
+};
 
-  Pos.find(condition)
-    .populate({ path: 'partner', model: Partner })
+// Find a single with an user
+exports.findByUser = (req, res) => {
+  const user = req.params.user;
+  
+  Possession.find({user: user})
+    .populate({ path: 'pos', model: Pos })
+    .populate({ path: 'payment', model: Payment })
+    .populate({ path: 'user', model: User })
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving data."
+      });
+    });
+};
+
+// Find a single with an user open
+exports.findByUserOpen = (req, res) => {
+  const users = req.params.user;
+  
+  Possession.find({user: users, open: true})
+    .populate({ path: 'pos', model: Pos })
+    .populate({ path: 'payment', model: Payment })
+    .populate({ path: 'user', model: User })
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving data."
+      });
+    });
+};
+
+// Find a single with an user open
+exports.findByUserClose = (req, res) => {
+  const users = req.params.user;
+  
+  Possession.find({user: users, open: false})
+    .populate({ path: 'pos', model: Pos })
+    .populate({ path: 'payment', model: Payment })
     .populate({ path: 'user', model: User })
     .then(data => {
       res.send(data);
@@ -143,7 +153,7 @@ exports.update = (req, res) => {
 
   const id = req.params.id;
 
-  Pos.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
+  Possession.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
     .then(data => {
       if (!data) {
         res.status(404).send({
@@ -164,7 +174,7 @@ exports.update = (req, res) => {
 exports.delete = (req, res) => {
   const id = req.params.id;
 
-  Pos.findByIdAndRemove(id, { useFindAndModify: false })
+  Possession.findByIdAndRemove(id, { useFindAndModify: false })
     .then(data => {
       if (!data) {
         res.status(404).send({
@@ -185,7 +195,7 @@ exports.delete = (req, res) => {
 
 // Delete all from the database.
 exports.deleteAll = (req, res) => {
-  Pos.deleteMany({})
+  Possession.deleteMany({})
     .then(data => {
       res.send({
         message: `${data.deletedCount} Data were deleted successfully!`
