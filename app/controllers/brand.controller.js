@@ -20,6 +20,27 @@ exports.create = (req, res) => {
   }).catch(err =>{res.status(500).send({message:err.message}); });
 };
 
+// Create and Save new
+exports.createMany = (req, res) => {
+  // Validate request
+  if (!req.body) {
+    res.status(400).send({ message: "Content can not be empty!" });
+    return;
+  }
+
+  Brand.insertMany(req.body).then(dataa => {
+    res.send(dataa);
+    for(let x=0;x<dataa.length;x++){
+      console.log(dataa[x], x);
+      Brand.findByIdAndUpdate(dataa[x]._id, ({active: true}), { useFindAndModify: false })
+        .then(data => {
+          const log = ({message: "uploaded", brand: dataa[x]._id, user: req.query.user,});
+          Log.create(log).then(datab => {console.log(x)});
+        });
+    }
+  }).catch(err =>{res.status(500).send({message:err.message}); });
+};
+
 // Retrieve all from the database.
 exports.findAll = (req, res) => {
   const description = req.query.description;
