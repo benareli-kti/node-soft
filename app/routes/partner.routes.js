@@ -6,6 +6,9 @@ module.exports = app => {
   // Create a new
   routerPartner.post("/", partners.create);
 
+  // Create a new
+  routerPartner.post("/many", partners.createMany);
+
   // Retrieve all
   routerPartner.get("/", partners.findAll);
 

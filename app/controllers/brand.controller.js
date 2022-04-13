@@ -31,11 +31,10 @@ exports.createMany = (req, res) => {
   Brand.insertMany(req.body).then(dataa => {
     res.send(dataa);
     for(let x=0;x<dataa.length;x++){
-      console.log(dataa[x], x);
       Brand.findByIdAndUpdate(dataa[x]._id, ({active: true}), { useFindAndModify: false })
         .then(data => {
           const log = ({message: "uploaded", brand: dataa[x]._id, user: req.query.user,});
-          Log.create(log).then(datab => {console.log(x)});
+          Log.create(log).then(datab => {});
         });
     }
   }).catch(err =>{res.status(500).send({message:err.message}); });

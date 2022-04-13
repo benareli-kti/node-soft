@@ -6,6 +6,9 @@ module.exports = app => {
   // Create a new
   routerWh.post("/", warehouses.create);
 
+  // Create a new
+  routerWh.post("/many", warehouses.createMany);
+
   // Retrieve all
   routerWh.get("/", warehouses.findAll);
 
