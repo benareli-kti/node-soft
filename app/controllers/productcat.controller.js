@@ -2,6 +2,7 @@ const db = require("../models");
 const ProductCat = db.productcats;
 const Log = db.logs;
 const User = db.users;
+const duplicate = [];
 
 // Create and Save new
 exports.create = (req, res) => {
@@ -24,22 +25,40 @@ exports.create = (req, res) => {
 // Create and Save new
 exports.createMany = (req, res) => {
   // Validate request
+  duplicate.splice(0,duplicate.length);
   if (!req.body) {
     res.status(400).send({ message: "Content can not be empty!" });
     return;
-  }
-
-  ProductCat.insertMany(req.body).then(dataa => {
-    res.send(dataa);
-    for(let x=0;x<dataa.length;x++){
-      ProductCat.findByIdAndUpdate(dataa[x]._id, ({active: true}), { useFindAndModify: false })
-        .then(data => {
-          const log = ({message: "uploaded", category: dataa[x]._id, user: req.query.user,});
-          Log.create(log).then(datab => {});
-        });
-    }
-  }).catch(err =>{res.status(500).send({message:err.message}); });
+  }else{startSequence(0, req.body, req.query.user, res);}
 };
+
+function startSequence(x, reqs, users, res){
+  if(reqs[x]){
+    ProductCat.find({description: reqs[x].description}).then(data => {
+      if(data.length>0){
+        duplicate.push(x+1);
+        sequencing(x, reqs, users, res);
+      }
+      else{
+        const prodcat = ({catid: reqs[x].catid, description: reqs[x].description, active: true});
+        ProductCat.create(prodcat).then(dataa => {
+          const log = ({message: "add", category: dataa._id, user: users,});
+          Log.create(log).then(datab => {
+            sequencing(x, reqs, users, res);
+          }).catch(err =>{res.status(500).send({message:err.message}); });
+        }).catch(err =>{res.status(500).send({message:err.message}); });
+      }
+    });
+  }else{
+    if(duplicate.length>0) res.status(500).send(duplicate);
+    else res.status(200).send({message:"All Data had been inputed!"});
+  }
+}
+
+function sequencing(x, reqs, users, res){
+  x=x+1;
+  startSequence(x, reqs, users, res);
+}
 
 // Retrieve all from the database.
 exports.findAll = (req, res) => {

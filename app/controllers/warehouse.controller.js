@@ -24,22 +24,40 @@ exports.create = (req, res) => {
 // Create and Save new
 exports.createMany = (req, res) => {
   // Validate request
+  duplicate.splice(0,duplicate.length);
   if (!req.body) {
     res.status(400).send({ message: "Content can not be empty!" });
     return;
-  }
-
-  Warehouse.insertMany(req.body).then(dataa => {
-    res.send(dataa);
-    for(let x=0;x<dataa.length;x++){
-      Warehouse.findByIdAndUpdate(dataa[x]._id, ({main:false,active:true}), { useFindAndModify: false })
-        .then(data => {
-          const log = ({message: "uploaded", warehouse: dataa[x]._id, user: req.query.user,});
-          Log.create(log).then(datab => {});
-        });
-    }
-  }).catch(err =>{res.status(500).send({message:err.message}); });
+  }else{startSequence(0, req.body, req.query.user, res);}
 };
+
+function startSequence(x, reqs, users, res){
+  if(reqs[x]){
+    Warehouse.find({description: reqs[x].description}).then(data => {
+      if(data.length>0){
+        duplicate.push(x+1);
+        sequencing(x, reqs, users, res);
+      }
+      else{
+        const wh = ({short: reqs[x].short, name: reqs[x].name, active: true});
+        Warehouse.create(wh).then(dataa => {
+          const log = ({message: "add", warehouse: dataa._id, user: users,});
+          Log.create(log).then(datab => {
+            sequencing(x, reqs, users, res);
+          }).catch(err =>{res.status(500).send({message:err.message}); });
+        }).catch(err =>{res.status(500).send({message:err.message}); });
+      }
+    });
+  }else{
+    if(duplicate.length>0) res.status(500).send(duplicate);
+    else res.status(200).send({message:"All Data had been inputed!"});
+  }
+}
+
+function sequencing(x, reqs, users, res){
+  x=x+1;
+  startSequence(x, reqs, users, res);
+}
 
 // Retrieve all from the database.
 exports.findAll = (req, res) => {
