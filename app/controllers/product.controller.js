@@ -107,6 +107,80 @@ exports.create = (req, res) => {
   }
 };
 
+
+// Create and Save new
+exports.createMany = (req, res) => {
+  // Validate request
+  if (!req.body) {
+    res.status(400).send({ message: "Content can not be empty!" });
+    return;
+  }else{startSequence(0, req.body, req.query.user, res);}
+};
+
+function startSequence(x, reqs, users, res){
+  if(reqs[x]){
+    console.log(reqs[x]);
+    /*if((reqs[x].customer=="ya"||reqs[x].customer=="Ya"||reqs[x].customer=="YA")
+      &&(reqs[x].supplier=="ya"||reqs[x].supplier=="Ya"||reqs[x].supplier=="YA")){
+      const partner = ({code: reqs[x].code,name: reqs[x].name,phone: reqs[x].phone,
+        isCustomer: true,
+        isSupplier: true,
+        active: true
+      });
+      Partner.create(partner).then(dataa => {
+        const log = ({message: "add", partner: dataa._id, user: users,});
+        Log.create(log).then(datab => {
+          sequencing(x, reqs, users, res);
+        });
+      });
+    }else if((reqs[x].customer!="ya"||reqs[x].customer!="Ya"||reqs[x].customer!="YA")
+      &&(reqs[x].supplier=="ya"||reqs[x].supplier=="Ya"||reqs[x].supplier=="YA")){
+      const partner = ({code: reqs[x].code,name: reqs[x].name,phone: reqs[x].phone,
+        isCustomer: false,
+        isSupplier: true,
+        active: true
+      });
+      Partner.create(partner).then(dataa => {
+        const log = ({message: "add", partner: dataa._id, user: users,});
+        Log.create(log).then(datab => {
+          sequencing(x, reqs, users, res);
+        });
+      });
+    }else if((reqs[x].customer=="ya"||reqs[x].customer=="Ya"||reqs[x].customer=="YA")
+      &&(reqs[x].supplier!="ya"||reqs[x].supplier!="Ya"||reqs[x].supplier!="YA")){
+      const partner = ({code: reqs[x].code,name: reqs[x].name,phone: reqs[x].phone,
+        isCustomer: true,
+        isSupplier: false,
+        active: true
+      });
+      Partner.create(partner).then(dataa => {
+        const log = ({message: "add", partner: dataa._id, user: users,});
+        Log.create(log).then(datab => {
+          sequencing(x, reqs, users, res);
+        });
+      });
+    }else{
+      const partner = ({code: reqs[x].code,name: reqs[x].name,phone: reqs[x].phone,
+        isCustomer: false,
+        isSupplier: false,
+        active: true
+      });
+      Partner.create(partner).then(dataa => {
+        const log = ({message: "add", partner: dataa._id, user: users,});
+        Log.create(log).then(datab => {
+          sequencing(x, reqs, users, res);
+        });
+      });
+      //.catch(err =>{res.status(500).send({message:err.message}); });
+    }*/
+  }else{}//res.send({message:"All Partner Data had been inputed!"})}
+}
+
+function sequencing(x, reqs, users, res){
+  x=x+1;
+  startSequence(x, reqs, users, res);
+}
+
 // Retrieve all from the database.
 exports.findAll = (req, res) => {
   const name = req.query.name;

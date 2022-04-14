@@ -33,19 +33,59 @@ exports.createMany = (req, res) => {
   if (!req.body) {
     res.status(400).send({ message: "Content can not be empty!" });
     return;
-  }
-
-  Partner.insertMany(req.body).then(dataa => {
-    res.send(dataa);
-    for(let x=0;x<dataa.length;x++){
-      Partner.findByIdAndUpdate(dataa[x]._id, ({isCustomer:true,isSupplier:true,active:true}), { useFindAndModify: false })
-        .then(data => {
-          const log = ({message: "uploaded", brand: dataa[x]._id, user: req.query.user,});
-          Log.create(log).then(datab => {});
-        });
-    }
-  }).catch(err =>{res.status(500).send({message:err.message}); });
+  }else{startSequence(0, req.body, req.query.user, res);}
 };
+
+function startSequence(x, reqs, users, res){
+  if(reqs[x]){
+    Partner.find({name: reqs[x].name}).then(data => {
+      if(data.length>0){console.log(data)}
+      else{
+        if((reqs[x].customer=="ya"||reqs[x].customer=="Ya"||reqs[x].customer=="YA")
+          &&(reqs[x].supplier=="ya"||reqs[x].supplier=="Ya"||reqs[x].supplier=="YA")){
+          const partner = ({code: reqs[x].code,name: reqs[x].name,phone: reqs[x].phone,
+            isCustomer: true,isSupplier: true,active: true});
+          Partner.create(partner).then(dataa => {
+            const log = ({message: "add", partner: dataa._id, user: users,});
+            Log.create(log).then(datab => {
+              sequencing(x, reqs, users, res);});
+          });
+        }else if((reqs[x].customer!="ya"||reqs[x].customer!="Ya"||reqs[x].customer!="YA")
+          &&(reqs[x].supplier=="ya"||reqs[x].supplier=="Ya"||reqs[x].supplier=="YA")){
+          const partner = ({code: reqs[x].code,name: reqs[x].name,phone: reqs[x].phone,
+            isCustomer: false,isSupplier: true,active: true});
+          Partner.create(partner).then(dataa => {
+            const log = ({message: "add", partner: dataa._id, user: users,});
+            Log.create(log).then(datab => {
+              sequencing(x, reqs, users, res);});
+          });
+        }else if((reqs[x].customer=="ya"||reqs[x].customer=="Ya"||reqs[x].customer=="YA")
+          &&(reqs[x].supplier!="ya"||reqs[x].supplier!="Ya"||reqs[x].supplier!="YA")){
+          const partner = ({code: reqs[x].code,name: reqs[x].name,phone: reqs[x].phone,
+            isCustomer: true,isSupplier: false,active: true});
+          Partner.create(partner).then(dataa => {
+            const log = ({message: "add", partner: dataa._id, user: users,});
+            Log.create(log).then(datab => {
+              sequencing(x, reqs, users, res);});
+          });
+        }else{
+          const partner = ({code: reqs[x].code,name: reqs[x].name,phone: reqs[x].phone,
+            isCustomer: false,isSupplier: false,active: true});
+          Partner.create(partner).then(dataa => {
+            const log = ({message: "add", partner: dataa._id, user: users,});
+            Log.create(log).then(datab => {
+              sequencing(x, reqs, users, res);});
+          });
+        }
+      }
+    });
+  }else{res.send({message:"All Partner Data had been inputed!"})}
+}
+
+function sequencing(x, reqs, users, res){
+  x=x+1;
+  startSequence(x, reqs, users, res);
+}
 
 // Retrieve all from the database.
 exports.findAll = (req, res) => {
