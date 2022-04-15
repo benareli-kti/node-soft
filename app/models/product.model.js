@@ -13,23 +13,19 @@ module.exports = mongoose => {
       image: String,
       category: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "ProductCat",
-        description: String
+        ref: "ProductCat"
       },
       taxin: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Tax",
-        name: String
+        ref: "Tax"
       },
       taxout: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Tax",
-        name: String
+        ref: "Tax"
       },
       brand: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Brand",
-        description: String
+        ref: "Brand"
       },
       qop:[
         {type: mongoose.Schema.Types.ObjectId,
