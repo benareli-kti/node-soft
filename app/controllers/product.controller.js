@@ -7,6 +7,12 @@ const Log = db.logs;
 const User = db.users;
 const Tax = db.taxs;
 const mongoose = require("mongoose");
+const duplicate = [];
+const skipped = [];
+var Pcateg = '';
+var Pbrand = '';
+var Ptaxin = '100';
+var Ptaxout = '100';
 
 // Create and Save new
 exports.create = (req, res) => {
@@ -119,61 +125,62 @@ exports.createMany = (req, res) => {
 
 function startSequence(x, reqs, users, res){
   if(reqs[x]){
-    console.log(reqs[x]);
-    /*if((reqs[x].customer=="ya"||reqs[x].customer=="Ya"||reqs[x].customer=="YA")
-      &&(reqs[x].supplier=="ya"||reqs[x].supplier=="Ya"||reqs[x].supplier=="YA")){
-      const partner = ({code: reqs[x].code,name: reqs[x].name,phone: reqs[x].phone,
-        isCustomer: true,
-        isSupplier: true,
-        active: true
-      });
-      Partner.create(partner).then(dataa => {
-        const log = ({message: "add", partner: dataa._id, user: users,});
-        Log.create(log).then(datab => {
-          sequencing(x, reqs, users, res);
-        });
-      });
-    }else if((reqs[x].customer!="ya"||reqs[x].customer!="Ya"||reqs[x].customer!="YA")
-      &&(reqs[x].supplier=="ya"||reqs[x].supplier=="Ya"||reqs[x].supplier=="YA")){
-      const partner = ({code: reqs[x].code,name: reqs[x].name,phone: reqs[x].phone,
-        isCustomer: false,
-        isSupplier: true,
-        active: true
-      });
-      Partner.create(partner).then(dataa => {
-        const log = ({message: "add", partner: dataa._id, user: users,});
-        Log.create(log).then(datab => {
-          sequencing(x, reqs, users, res);
-        });
-      });
-    }else if((reqs[x].customer=="ya"||reqs[x].customer=="Ya"||reqs[x].customer=="YA")
-      &&(reqs[x].supplier!="ya"||reqs[x].supplier!="Ya"||reqs[x].supplier!="YA")){
-      const partner = ({code: reqs[x].code,name: reqs[x].name,phone: reqs[x].phone,
-        isCustomer: true,
-        isSupplier: false,
-        active: true
-      });
-      Partner.create(partner).then(dataa => {
-        const log = ({message: "add", partner: dataa._id, user: users,});
-        Log.create(log).then(datab => {
-          sequencing(x, reqs, users, res);
-        });
-      });
-    }else{
-      const partner = ({code: reqs[x].code,name: reqs[x].name,phone: reqs[x].phone,
-        isCustomer: false,
-        isSupplier: false,
-        active: true
-      });
-      Partner.create(partner).then(dataa => {
-        const log = ({message: "add", partner: dataa._id, user: users,});
-        Log.create(log).then(datab => {
-          sequencing(x, reqs, users, res);
-        });
-      });
-      //.catch(err =>{res.status(500).send({message:err.message}); });
-    }*/
-  }else{}//res.send({message:"All Partner Data had been inputed!"})}
+    Product.find({name: reqs[x].name}).then(data => {
+      if(data.length>0){
+        duplicate.push(x+1);
+        sequencing(x, reqs, users, res);
+      }
+      else{
+        ProductCat.find({description: reqs[x].category}).then(dataa => {
+          if(dataa.length>0) Pcateg = dataa[0]._id;
+          else{ skip.push(x+1); sequencing(x, reqs, users, res); }
+          Brand.find({description: reqs[x].brand}).then(datab => {
+            if(datab.length>0) Pbrand = datab[0]._id;
+            if(!reqs[x].tax_in) reqs[x].tax_in = '0';
+            Tax.find({tax: Number(reqs[x].tax_in)}).then(datac => {
+              if(datac) Ptaxin = datac[0]._id;
+              Tax.find({tax: Number(reqs[x].tax_out)}).then(datad => {
+                if(datad) Ptaxout = datad[0]._id;
+                
+                if(reqs[x].type=='barang'||reqs[x].type=='Barang'||reqs[x].type=="BARANG"){
+                  const product = ({
+                    sku:reqs[x].sku,name:reqs[x].name,description:reqs[x].description,
+                    listprice:reqs[x].listprice,botprice:reqs[x].botprice,cost:reqs[x].cost,
+                    image:"default.png",isStock:true,category:Pcateg,taxin:Ptaxin,taxout:Ptaxout,
+                    brand:Pbrand,active:true
+                  })
+                  Product.create(product).then(datae => {
+                  const log = ({message: "add", product: datae._id, user: users,});
+                    Log.create(log).then(dataf => {
+                      sequencing(x, reqs, users, res);
+                    }).catch(err =>{res.status(500).send({message:err.message}); });
+                  }).catch(err =>{res.status(500).send({message:err.message}); });
+                }else{
+                  const product = ({
+                    sku:reqs[x].sku,name:reqs[x].name,description:reqs[x].description,
+                    listprice:reqs[x].listprice,botprice:reqs[x].botprice,cost:reqs[x].cost,
+                    image:"default.png",isStock:false,category:Pcateg,taxin:Ptaxin,taxout:Ptaxout,
+                    brand:Pbrand,active:true
+                  })
+                  Product.create(product).then(datae => {
+                  const log = ({message: "add", product: datae._id, user: users,});
+                    Log.create(log).then(dataf => {
+                      sequencing(x, reqs, users, res);
+                    }).catch(err =>{res.status(500).send({message:err.message}); });
+                  }).catch(err =>{res.status(500).send({message:err.message}); });
+                }
+
+              }).catch(err =>{res.status(500).send({message:err.message}); });
+            }).catch(err =>{res.status(500).send({message:err.message}); });
+          }).catch(err =>{res.status(500).send({message:err.message}); });
+        }).catch(err =>{res.status(500).send({message:err.message}); });
+        
+      }
+    });
+  }else{
+    if(duplicate.length>0||skipped.length>0) res.status(500).send(duplicate, skipped);
+    else res.status(200).send({message:"All Data had been inputed!"});
+  }
 }
 
 function sequencing(x, reqs, users, res){
