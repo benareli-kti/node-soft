@@ -149,7 +149,7 @@ function startSequence(x, reqs, users, res){
                 if(reqs[x].type=='barang'||reqs[x].type=='Barang'||reqs[x].type=="BARANG"){
                   const product = ({
                     sku:reqs[x].sku,name:reqs[x].name,description:reqs[x].description,
-                    barcode:reqs[x].barcode,listprice:reqs[x].listprice,
+                    barcode:reqs[x].barcode,listprice:reqs[x].listprice,qoh:0,
                     botprice:reqs[x].botprice,cost:reqs[x].cost,image:"default.png",
                     isStock:true,category:Pcateg,taxin:Ptaxin,taxout:Ptaxout,
                     brand:Pbrand,active:true
@@ -163,7 +163,7 @@ function startSequence(x, reqs, users, res){
                 }else{
                   const product = ({
                     sku:reqs[x].sku,name:reqs[x].name,description:reqs[x].description,
-                    barcode:reqs[x].barcode,listprice:reqs[x].listprice,
+                    barcode:reqs[x].barcode,listprice:reqs[x].listprice,qoh:0,
                     botprice:reqs[x].botprice,cost:reqs[x].cost,image:"default.png",
                     isStock:false,category:Pcateg,taxin:Ptaxin,taxout:Ptaxout,
                     brand:Pbrand,active:true
