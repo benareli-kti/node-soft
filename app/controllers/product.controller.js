@@ -425,7 +425,7 @@ exports.deleteAll = (req, res) => {
 
 // Find all active
 exports.findAllActive = (req, res) => {
-  Product.find({ active: true }, sort=[( "_id", 1)])
+  Product.find({ active: true })
     .populate({ path: 'category', model: ProductCat })
     .populate({ path: 'brand', model: Brand })
     .populate({ path: 'taxin', model: Tax })
