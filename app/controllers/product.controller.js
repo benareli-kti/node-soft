@@ -27,6 +27,7 @@ exports.create = (req, res) => {
       sku: req.body.sku,
       name: req.body.name,
       description: req.body.description,
+      barcode: req.body.barcode,
       listprice: req.body.listprice,
       botprice: req.body.botprice,
       cost: req.body.cost,
@@ -49,6 +50,7 @@ exports.create = (req, res) => {
       sku: req.body.sku,
       name: req.body.name,
       description: req.body.description,
+      barcode: req.body.barcode,
       listprice: req.body.listprice,
       botprice: req.body.botprice,
       cost: req.body.cost,
@@ -71,6 +73,7 @@ exports.create = (req, res) => {
       sku: req.body.sku,
       name: req.body.name,
       description: req.body.description,
+      barcode: req.body.barcode,
       listprice: req.body.listprice,
       botprice: req.body.botprice,
       cost: req.body.cost,
@@ -92,6 +95,7 @@ exports.create = (req, res) => {
       sku: req.body.sku,
       name: req.body.name,
       description: req.body.description,
+      barcode: req.body.barcode,
       listprice: req.body.listprice,
       botprice: req.body.botprice,
       cost: req.body.cost,
@@ -145,8 +149,9 @@ function startSequence(x, reqs, users, res){
                 if(reqs[x].type=='barang'||reqs[x].type=='Barang'||reqs[x].type=="BARANG"){
                   const product = ({
                     sku:reqs[x].sku,name:reqs[x].name,description:reqs[x].description,
-                    listprice:reqs[x].listprice,botprice:reqs[x].botprice,cost:reqs[x].cost,
-                    image:"default.png",isStock:true,category:Pcateg,taxin:Ptaxin,taxout:Ptaxout,
+                    barcode:reqs[x].barcode,listprice:reqs[x].listprice,
+                    botprice:reqs[x].botprice,cost:reqs[x].cost,image:"default.png",
+                    isStock:true,category:Pcateg,taxin:Ptaxin,taxout:Ptaxout,
                     brand:Pbrand,active:true
                   })
                   Product.create(product).then(datae => {
@@ -158,8 +163,9 @@ function startSequence(x, reqs, users, res){
                 }else{
                   const product = ({
                     sku:reqs[x].sku,name:reqs[x].name,description:reqs[x].description,
-                    listprice:reqs[x].listprice,botprice:reqs[x].botprice,cost:reqs[x].cost,
-                    image:"default.png",isStock:false,category:Pcateg,taxin:Ptaxin,taxout:Ptaxout,
+                    barcode:reqs[x].barcode,listprice:reqs[x].listprice,
+                    botprice:reqs[x].botprice,cost:reqs[x].cost,image:"default.png",
+                    isStock:false,category:Pcateg,taxin:Ptaxin,taxout:Ptaxout,
                     brand:Pbrand,active:true
                   })
                   Product.create(product).then(datae => {

@@ -4,6 +4,7 @@ module.exports = mongoose => {
       sku: String,
       name: String,
       description: String,
+      barcode: String,
       listprice: Number,
       botprice: Number,
       cost: Number,
