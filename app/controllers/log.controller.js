@@ -1,5 +1,6 @@
 const db = require("../models");
 const Log = db.logs;
+const Store = db.stores;
 const ProductCat = db.productcats;
 const Brand = db.brands;
 const Product = db.products;
@@ -60,6 +61,16 @@ exports.create = (req, res) => {
     const log = new Log({
       message: req.body.message,
       warehouse: mongoose.Types.ObjectId(req.body.warehouse),
+      user: mongoose.Types.ObjectId(req.body.user),
+    });
+    log.save(log).then(data => {res.send(data);}).catch(err => {res.status(500).send({message:
+          err.message || "Some error occurred while creating the Data."});
+    });
+  }
+  else if(req.body.store != "null"){
+    const log = new Log({
+      message: req.body.message,
+      store: mongoose.Types.ObjectId(req.body.store),
       user: mongoose.Types.ObjectId(req.body.user),
     });
     log.save(log).then(data => {res.send(data);}).catch(err => {res.status(500).send({message:

@@ -28,6 +28,7 @@ const Ids = db.ids;
 const Log = db.logs;
 
 const Warehouse = db.warehouses;
+const Store = db.stores;
 const ProductCat = db.productcats;
 const Partner = db.partners;
 const Product = db.products;
@@ -68,6 +69,7 @@ require("./app/routes/product.routes")(app);
 require("./app/routes/productcat.routes")(app);
 require("./app/routes/brand.routes")(app);
 require("./app/routes/warehouse.routes")(app);
+require("./app/routes/store.routes")(app);
 require("./app/routes/partner.routes")(app);
 require("./app/routes/stockmove.routes")(app);
 require("./app/routes/qof.routes")(app);
@@ -356,6 +358,23 @@ function WarehouseCare() {
     logWH.save(function(err){
         if(err) return console.error(err.stack)
         console.log("Log is added");
+        var store = new Store({
+          store_name: "Soft Solution",
+          warehouse: warehouse._id,
+          active: true
+        })
+        store.save(function(err){
+          if (err) return console.error(err.stack)
+          console.log("addes 'Soft Solution' to store collection");
+          var logStore = new Log({
+            message: "added by system",
+            store: store._id
+          })
+          logStore.save(function(err){
+            if (err) return console.error(err.stack)
+            console.log("Log is added");
+          })
+        });
     });
   });
 }

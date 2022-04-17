@@ -15,6 +15,7 @@ exports.create = (req, res) => {
 
   const possession = ({
     session_id: req.body.session_id,
+    store: req.body.store,
     time_open: req.body.time_open,
     time_close: req.body.time_close,
     shift: req.body.shift,

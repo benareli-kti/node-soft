@@ -8,6 +8,8 @@ module.exports = mongoose => {
       listprice: Number,
       botprice: Number,
       cost: Number,
+      min: Number,
+      max: Number,
       isStock: Boolean,
       qoh: Number,
       image: String,
@@ -26,6 +28,10 @@ module.exports = mongoose => {
       brand: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Brand"
+      },
+      supplier: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Partner"
       },
       qop:[
         {type: mongoose.Schema.Types.ObjectId,

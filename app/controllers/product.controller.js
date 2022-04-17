@@ -37,6 +37,9 @@ exports.create = (req, res) => {
       category: req.body.category,
       taxout: req.body.taxout,
       brand: req.body.brand,
+      min: req.body.min,
+      max: req.body.max,
+      supplier: req.body.supplier,
       active: req.body.active ? req.body.active : false
     });
     Product.create(product).then(dataa => {
@@ -60,6 +63,9 @@ exports.create = (req, res) => {
       category: req.body.category,
       taxin: req.body.taxin,
       brand: req.body.brand,
+      min: req.body.min,
+      max: req.body.max,
+      supplier: req.body.supplier,
       active: req.body.active ? req.body.active : false
     });
     Product.create(product).then(dataa => {
@@ -82,6 +88,9 @@ exports.create = (req, res) => {
       isStock: req.body.isStock ? req.body.isStock : false,
       category: req.body.category,
       brand: req.body.brand,
+      min: req.body.min,
+      max: req.body.max,
+      supplier: req.body.supplier,
       active: req.body.active ? req.body.active : false
     });
     Product.create(product).then(dataa => {
@@ -106,6 +115,9 @@ exports.create = (req, res) => {
       taxin: req.body.taxin,
       taxout: req.body.taxout,
       brand: req.body.brand,
+      min: req.body.min,
+      max: req.body.max,
+      supplier: req.body.supplier,
       active: req.body.active ? req.body.active : false
     });
     Product.create(product).then(dataa => {
@@ -152,7 +164,8 @@ function startSequence(x, reqs, users, res){
                     barcode:reqs[x].barcode,listprice:reqs[x].listprice,qoh:0,
                     botprice:reqs[x].botprice,cost:reqs[x].cost,image:"default.png",
                     isStock:true,category:Pcateg,taxin:Ptaxin,taxout:Ptaxout,
-                    brand:Pbrand,active:true
+                    brand:Pbrand,active:true,min: req.body.min,max: req.body.max,
+                    supplier: req.body.supplier
                   })
                   Product.create(product).then(datae => {
                   const log = ({message: "add", product: datae._id, user: users,});
@@ -166,7 +179,8 @@ function startSequence(x, reqs, users, res){
                     barcode:reqs[x].barcode,listprice:reqs[x].listprice,qoh:0,
                     botprice:reqs[x].botprice,cost:reqs[x].cost,image:"default.png",
                     isStock:false,category:Pcateg,taxin:Ptaxin,taxout:Ptaxout,
-                    brand:Pbrand,active:true
+                    brand:Pbrand,active:true,min: req.body.min,max: req.body.max,
+                    supplier: req.body.supplier
                   })
                   Product.create(product).then(datae => {
                   const log = ({message: "add", product: datae._id, user: users,});
@@ -220,6 +234,7 @@ exports.findOne = (req, res) => {
   Product.findById(id)
     .populate({ path: 'category', model: ProductCat })
     .populate({ path: 'brand', model: Brand })
+    .populate({ path: 'supplier', model: Partner })
     .then(data => {
       if (!data)
         res.status(404).send({ message: "Not found Data with id " + id });
@@ -431,6 +446,7 @@ exports.findAllActive = (req, res) => {
     .populate({ path: 'brand', model: Brand })
     .populate({ path: 'taxin', model: Tax })
     .populate({ path: 'taxout', model: Tax })
+    .populate({ path: 'supplier', model: Partner })
     .then(data => {
       res.send(data);
     })

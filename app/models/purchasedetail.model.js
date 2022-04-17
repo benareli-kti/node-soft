@@ -1,15 +1,13 @@
 module.exports = mongoose => {
   var schema = mongoose.Schema(
     {
-      message: String,
-      category: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "ProductCat"
-      },
-      brand: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Brand"
-      },
+      purchase_id: String,
+      qty: Number,
+      qty_done: Number,
+      price_unit: Number,
+      discount: Number,
+      tax: Number,
+      subtotal: Number,
       product: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Product"
@@ -22,21 +20,9 @@ module.exports = mongoose => {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Warehouse"
       },
-      store: {
+      stockmove: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Store"
-      },
-      pos: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Pos"
-      },
-      purchase: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Purchase"
-      },
-      user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User"
+        ref: "Stockmove"
       }
     },
     { timestamps: true }
@@ -46,6 +32,6 @@ module.exports = mongoose => {
     object.id = _id;
     return object;
   });
-  const Log = mongoose.model("logs", schema);
-  return Log;
+  const Purchasedetail = mongoose.model("purchasedetail", schema);
+  return Purchasedetail;
 };
