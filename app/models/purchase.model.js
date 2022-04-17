@@ -35,5 +35,5 @@ module.exports = mongoose => {
     return object;
   });
   const Purchase = mongoose.model("purchases", schema);
-  return Pos;
+  return Purchase;
 };

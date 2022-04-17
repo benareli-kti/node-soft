@@ -15,7 +15,7 @@ exports.create = (req, res) => {
   const prodcat = ({catid: req.body.catid, description: req.body.description, 
     active: req.body.active ? req.body.active : false});
   ProductCat.create(prodcat).then(dataa => {
-    const log = ({message: "add", category: dataa._id, user: req.body.user,});
+    const log = ({message: "dibuat", category: dataa._id, user: req.body.user,});
     Log.create(log).then(datab => {
       res.send(datab);
     }).catch(err =>{res.status(500).send({message:err.message}); });
@@ -34,15 +34,15 @@ exports.createMany = (req, res) => {
 
 function startSequence(x, reqs, users, res){
   if(reqs[x]){
-    ProductCat.find({description: reqs[x].description}).then(data => {
+    ProductCat.find({description: reqs[x].nama}).then(data => {
       if(data.length>0){
         duplicate.push(x+1);
         sequencing(x, reqs, users, res);
       }
       else{
-        const prodcat = ({catid: reqs[x].catid, description: reqs[x].description, active: true});
+        const prodcat = ({catid: reqs[x].id, description: reqs[x].nama, active: true});
         ProductCat.create(prodcat).then(dataa => {
-          const log = ({message: "add", category: dataa._id, user: users,});
+          const log = ({message: "dibuat", category: dataa._id, user: users,});
           Log.create(log).then(datab => {
             sequencing(x, reqs, users, res);
           }).catch(err =>{res.status(500).send({message:err.message}); });
@@ -51,7 +51,7 @@ function startSequence(x, reqs, users, res){
     });
   }else{
     if(duplicate.length>0) res.status(500).send(duplicate);
-    else res.status(200).send({message:"All Data had been inputed!"});
+    else res.status(200).send({message:"Semua data telah diinput!"});
   }
 }
 

@@ -14,7 +14,7 @@ exports.create = (req, res) => {
 
   const brand = ({description: req.body.description, active: req.body.active ? req.body.active : false});
   Brand.create(brand).then(dataa => {
-    const log = ({message: "add", brand: dataa._id, user: req.body.user,});
+    const log = ({message: "dibuat", brand: dataa._id, user: req.body.user,});
     Log.create(log).then(datab => {
       res.send(datab);
     }).catch(err =>{res.status(500).send({message:err.message}); });
@@ -33,15 +33,15 @@ exports.createMany = (req, res) => {
 
 function startSequence(x, reqs, users, res){
   if(reqs[x]){
-    Brand.find({description: reqs[x].description}).then(data => {
+    Brand.find({description: reqs[x].nama}).then(data => {
       if(data.length>0){
         duplicate.push(x+1);
         sequencing(x, reqs, users, res);
       }
       else{
-        const brand = ({description: reqs[x].description, active: true});
+        const brand = ({description: reqs[x].nama, active: true});
         Brand.create(brand).then(dataa => {
-          const log = ({message: "add", brand: dataa._id, user: users,});
+          const log = ({message: "dibuat", brand: dataa._id, user: users,});
           Log.create(log).then(datab => {
             sequencing(x, reqs, users, res);
           }).catch(err =>{res.status(500).send({message:err.message}); });
@@ -49,8 +49,8 @@ function startSequence(x, reqs, users, res){
       }
     });
   }else{
-    if(duplicate.length>0) res.status(500).send(duplicate);
-    else res.status(200).send({message:"All Data had been inputed!"});
+    if(duplicate.length>0){res.status(500).send(duplicate);duplicate.splice(0,duplicate.length);}
+    else res.status(200).send({message:"Semua data telah diinput!"});
   }
 }
 

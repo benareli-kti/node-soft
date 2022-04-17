@@ -20,7 +20,7 @@ exports.create = (req, res) => {
     active: req.body.active ? req.body.active : false
   });
   Partner.create(partner).then(dataa => {
-    const log = ({message: "add", partner: dataa._id, user: req.body.user,});
+    const log = ({message: "dibuat", partner: dataa._id, user: req.body.user,});
     Log.create(log).then(datab => {
       res.send(datab);
     }).catch(err =>{res.status(500).send({message:err.message}); });
@@ -38,48 +38,48 @@ exports.createMany = (req, res) => {
 
 function startSequence(x, reqs, users, res){
   if(reqs[x]){
-    Partner.find({name: reqs[x].name}).then(data => {
+    Partner.find({name: reqs[x].nama}).then(data => {
       if(data.length>0){console.log(data)}
       else{
-        if((reqs[x].customer=="ya"||reqs[x].customer=="Ya"||reqs[x].customer=="YA")
+        if((reqs[x].pelanggan=="ya"||reqs[x].pelanggan=="Ya"||reqs[x].pelanggan=="YA")
           &&(reqs[x].supplier=="ya"||reqs[x].supplier=="Ya"||reqs[x].supplier=="YA")){
-          const partner = ({code: reqs[x].code,name: reqs[x].name,phone: reqs[x].phone,
+          const partner = ({code: reqs[x].kode,name: reqs[x].nama,phone: reqs[x].phone,
             isCustomer: true,isSupplier: true,active: true});
           Partner.create(partner).then(dataa => {
-            const log = ({message: "add", partner: dataa._id, user: users,});
+            const log = ({message: "dibuat", partner: dataa._id, user: users,});
             Log.create(log).then(datab => {
               sequencing(x, reqs, users, res);});
           });
-        }else if((reqs[x].customer!="ya"||reqs[x].customer!="Ya"||reqs[x].customer!="YA")
+        }else if((reqs[x].pelanggan!="ya"||reqs[x].pelanggan!="Ya"||reqs[x].pelanggan!="YA")
           &&(reqs[x].supplier=="ya"||reqs[x].supplier=="Ya"||reqs[x].supplier=="YA")){
-          const partner = ({code: reqs[x].code,name: reqs[x].name,phone: reqs[x].phone,
+          const partner = ({code: reqs[x].kode,name: reqs[x].nama,phone: reqs[x].phone,
             isCustomer: false,isSupplier: true,active: true});
           Partner.create(partner).then(dataa => {
-            const log = ({message: "add", partner: dataa._id, user: users,});
+            const log = ({message: "dibuat", partner: dataa._id, user: users,});
             Log.create(log).then(datab => {
               sequencing(x, reqs, users, res);});
           });
-        }else if((reqs[x].customer=="ya"||reqs[x].customer=="Ya"||reqs[x].customer=="YA")
+        }else if((reqs[x].pelanggan=="ya"||reqs[x].pelanggan=="Ya"||reqs[x].pelanggan=="YA")
           &&(reqs[x].supplier!="ya"||reqs[x].supplier!="Ya"||reqs[x].supplier!="YA")){
-          const partner = ({code: reqs[x].code,name: reqs[x].name,phone: reqs[x].phone,
+          const partner = ({code: reqs[x].kode,name: reqs[x].nama,phone: reqs[x].phone,
             isCustomer: true,isSupplier: false,active: true});
           Partner.create(partner).then(dataa => {
-            const log = ({message: "add", partner: dataa._id, user: users,});
+            const log = ({message: "dibuat", partner: dataa._id, user: users,});
             Log.create(log).then(datab => {
               sequencing(x, reqs, users, res);});
           });
         }else{
-          const partner = ({code: reqs[x].code,name: reqs[x].name,phone: reqs[x].phone,
+          const partner = ({code: reqs[x].kode,name: reqs[x].nama,phone: reqs[x].phone,
             isCustomer: false,isSupplier: false,active: true});
           Partner.create(partner).then(dataa => {
-            const log = ({message: "add", partner: dataa._id, user: users,});
+            const log = ({message: "dibuat", partner: dataa._id, user: users,});
             Log.create(log).then(datab => {
               sequencing(x, reqs, users, res);});
           });
         }
       }
     });
-  }else{res.send({message:"All Partner Data had been inputed!"})}
+  }else{res.send({message:"Semua data telah diinput!"})}
 }
 
 function sequencing(x, reqs, users, res){

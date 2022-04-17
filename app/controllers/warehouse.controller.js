@@ -14,7 +14,7 @@ exports.create = (req, res) => {
   const warehouse = ({name: req.body.name, short: req.body.short, 
     main: req.body.main ? req.body.main : false, active: req.body.active ? req.body.active : false});
   Warehouse.create(warehouse).then(dataa => {
-    const log = ({message: "add", warehouse: dataa._id, user: req.body.user,});
+    const log = ({message: "dibuat", warehouse: dataa._id, user: req.body.user,});
     Log.create(log).then(datab => {
       res.send(datab);
     }).catch(err =>{res.status(500).send({message:err.message}); });
@@ -33,15 +33,15 @@ exports.createMany = (req, res) => {
 
 function startSequence(x, reqs, users, res){
   if(reqs[x]){
-    Warehouse.find({description: reqs[x].description}).then(data => {
+    Warehouse.find({description: reqs[x].nama}).then(data => {
       if(data.length>0){
         duplicate.push(x+1);
         sequencing(x, reqs, users, res);
       }
       else{
-        const wh = ({short: reqs[x].short, name: reqs[x].name, active: true});
+        const wh = ({short: reqs[x].kode, name: reqs[x].nama, active: true});
         Warehouse.create(wh).then(dataa => {
-          const log = ({message: "add", warehouse: dataa._id, user: users,});
+          const log = ({message: "dibuat", warehouse: dataa._id, user: users,});
           Log.create(log).then(datab => {
             sequencing(x, reqs, users, res);
           }).catch(err =>{res.status(500).send({message:err.message}); });
@@ -50,7 +50,7 @@ function startSequence(x, reqs, users, res){
     });
   }else{
     if(duplicate.length>0) res.status(500).send(duplicate);
-    else res.status(200).send({message:"All Data had been inputed!"});
+    else res.status(200).send({message:"Semua data telah diinput!"});
   }
 }
 

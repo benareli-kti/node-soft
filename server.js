@@ -267,6 +267,7 @@ function initial() {
       });
 
       var settings = new Setting({
+        cost_general: true,
         comp_name: "Soft Solution",
         comp_addr: "",
         comp_phone: "",
