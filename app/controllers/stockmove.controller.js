@@ -24,8 +24,26 @@ exports.create = (req, res) => {
       qin: req.body.qin,
       qout: req.body.qout
     });
-    stockmove.save(stockmove).then(data => {res.send(data);}).catch(err => {res.status(500).send({message:
-          err.message || "Some error occurred while creating the Data."});
+    /*Old Price * Quantity valued at Old Price) + 
+    (Quantity received in last shipment * Price of the product in last shipment)) / 
+    (Quantity valued at old price + quantity received in last shipment*/
+    stockmove.save(stockmove).then(data => {
+        if(req.body.meth){
+          Product.find({_id:req.body.product}).then(dataa=>{
+            if(req.body.qin>0){
+            var x = ((dataa[0].qoh * dataa[0].cost) + (req.body.qin * req.body.cost))
+            / (dataa[0].qoh + req.body.qin);}
+            else{var x = dataa[0].cost}
+            Product.updateOne({_id:req.body.product},{cost:x,
+              qoh:dataa[0].qoh + req.body.qin})
+              .then(datab=> {
+                res.send(datab);
+              });
+          });
+        }else {
+          res.send(data);
+        }
+      }).catch(err => {res.status(500).send({message:err.message});
     });
   }
   if(req.body.partner == "null"){
@@ -36,8 +54,23 @@ exports.create = (req, res) => {
       qin: req.body.qin,
       qout: req.body.qout
     });
-    stockmove.save(stockmove).then(data => {res.send(data);}).catch(err => {res.status(500).send({message:
-          err.message || "Some error occurred while creating the Data."});
+    stockmove.save(stockmove).then(data => {
+        if(req.body.meth){
+          Product.find({_id:req.body.product}).then(dataa=>{
+            if(req.body.qin>0){
+            var x = ((dataa[0].qoh * dataa[0].cost) + (req.body.qin * req.body.cost))
+            / (dataa[0].qoh + req.body.qin);}
+            else{var x = dataa[0].cost}
+            Product.updateOne({_id:req.body.product},{cost:x,
+              qoh:dataa[0].qoh + req.body.qin})
+              .then(datab=> {
+                res.send(datab);
+              });
+          });
+        }else {
+          res.send(data);
+        }
+      }).catch(err => {res.status(500).send({message:err.message});
     });
   }
 };
@@ -89,11 +122,7 @@ exports.findByDesc = (req, res) => {
   const product = req.query.product;
   var condition = product ? { product: { $regex: new RegExp(product), $options: "i" } } : {};
 
-  Stockmove.find(condition)
-    .populate({ path: 'user', model: User })
-    .populate({ path: 'product', model: Product })
-    .populate({ path: 'partner', model: Partner })
-    .populate({ path: 'warehouse', model: Warehouse })
+  Stockmove.find({product: req.query.product})
     .then(data => {
       res.send(data);
     })

@@ -13,7 +13,8 @@ module.exports = mongoose => {
       warehouse: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Warehouse"
-      }
+      },
+      cost: Number
     },
     { timestamps: true }
   );

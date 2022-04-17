@@ -3,6 +3,7 @@ module.exports = mongoose => {
     {
       qin: Number,
       qout: Number,
+      cost: Number,
       user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"

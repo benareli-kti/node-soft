@@ -13,6 +13,7 @@ exports.create = (req, res) => {
     product: mongoose.Types.ObjectId(req.body.product),
     partner: mongoose.Types.ObjectId(req.body.partner),
     warehouse: mongoose.Types.ObjectId(req.body.warehouse),
+    cost: req.body.cost,
     qop: req.body.qop
   });
 
@@ -38,7 +39,8 @@ exports.createUpdate = (req, res) => {
     Qop.find({product: req.body.product, partner: req.body.partner, warehouse: req.body.warehouse})
       .then(data => {
         if(!data.length){
-          const qopp = ({product: req.body.product, partner: req.body.partner, warehouse: req.body.warehouse, qop: 0});
+          const qopp = ({product: req.body.product, partner: req.body.partner, warehouse: req.body.warehouse, 
+            cost: req.body.cost, qop: req.body.qop});
           Qop.create(qopp).then(dataa => {
             var qopid = dataa._id;
             const prod1 = Product.findOneAndUpdate({_id:req.body.product}, {$push: {qop: dataa._id}}, { useFindAndModify: false })
@@ -48,26 +50,29 @@ exports.createUpdate = (req, res) => {
                     var x = datac[0].qoh;
                     const prod3 = Product.updateOne({_id:req.body.product},{qoh:x + Number(req.body.qop)})
                       .then(datad => {
-                        const qop2 = Qop.update({_id:qopid},{qop:req.body.qop})
-                          .then(datae => {
-                            res.send(datae);
-                          }).catch(err =>{res.status(500).send({message:err.message}); });
+                        res.send(datad);
                       }).catch(err =>{res.status(500).send({message:err.message}); });
                   }).catch(err =>{res.status(500).send({message:err.message}); });
               }).catch(err =>{res.status(500).send({message:err.message}); });
           }).catch(err =>{res.status(500).send({message:err.message}); });
         }else{
-          Qop.updateOne({_id:data[0]._id},{qop: data[0].qop+req.body.qop})
+          Qop.find({_id: data[0]._id}).then(datax =>{
+            if(req.body.qop>0){
+            var x = ((datax[0].qop * datax[0].cost) + (req.body.qop * req.body.cost))
+            / (datax[0].qop + req.body.qop);}
+            else{var x=datax[0].cost}
+            Qop.updateOne({_id:data[0]._id},{qop: data[0].qop+req.body.qop, cost:x})
             .then(dataa => {
               const prod1 = Product.find({_id:req.body.product})
                 .then(datab => {
                   var x = datab[0].qoh;
-                  const prod2 = Product.findOneAndUpdate({_id:req.body.product},{qoh:x+Number(req.body.qop)})
+                  const prod2 = Product.findOneAndUpdate({_id:req.body.product},{qoh:x+Number(req.body.qop)}, { useFindAndModify: false })
                     .then(datac => {
                       res.send(datac);
                     }).catch(err =>{res.status(500).send({message:err.message}); });
                 }).catch(err =>{res.status(500).send({message:err.message}); });
             }).catch(err =>{res.status(500).send({message:err.message}); });
+          });
         }
         
       })
@@ -80,37 +85,40 @@ exports.createUpdate = (req, res) => {
     Qop.find({product: req.body.product, partner: { $exists : false }, warehouse: req.body.warehouse})
       .then(data => {
         if(!data.length){
-          const qopp = ({product: req.body.product, warehouse: req.body.warehouse, qop: 0});
+          const qopp = ({product: req.body.product, warehouse: req.body.warehouse, 
+            cost: req.body.cost, qop: req.body.qop});
           Qop.create(qopp).then(dataa => {
             var qopid = dataa._id;
-            console.log(qopid);
             const prod1 = Product.findOneAndUpdate({_id:req.body.product}, {$push: {qop: dataa._id}}, { useFindAndModify: false })
               .then(datab => {
                 const prod2 = Product.find({_id:req.body.product})
                   .then(datac => {
                     var x = datac[0].qoh;
-                    const prod3 = Product.updateOne({_id:req.body.product},{qoh:x + Number(req.body.qop)})
+                    const prod3 = Product.updateOne({_id:req.body.product},{qoh:x + Number(req.body.qop)}, { useFindAndModify: false })
                       .then(datad => {
-                        const qop2 = Qop.update({_id:qopid},{qop:req.body.qop})
-                          .then(datae => {
-                            res.send(datae);
-                          }).catch(err =>{res.status(500).send({message:err.message}); });
+                        res.send(datad);
                       }).catch(err =>{res.status(500).send({message:err.message}); });
                   }).catch(err =>{res.status(500).send({message:err.message}); });
               }).catch(err =>{res.status(500).send({message:err.message}); });
           }).catch(err =>{res.status(500).send({message:err.message}); });
         }else{
-          Qop.updateOne({_id:data[0]._id},{qop: data[0].qop+req.body.qop})
+          Qop.find({_id: data[0]._id}).then(datax =>{
+            if(req.body.qop>0){
+            var x = ((datax[0].qop * datax[0].cost) + (req.body.qop * req.body.cost))
+            / (datax[0].qop + req.body.qop);}
+            else{var x=datax[0].cost}
+            Qop.updateOne({_id:data[0]._id},{qop: data[0].qop+req.body.qop, cost:x})
             .then(dataa => {
               const prod1 = Product.find({_id:req.body.product})
                 .then(datab => {
                   var x = datab[0].qoh;
-                  const prod2 = Product.findOneAndUpdate({_id:req.body.product},{qoh:x+Number(req.body.qop)})
+                  const prod2 = Product.findOneAndUpdate({_id:req.body.product},{qoh:x+Number(req.body.qop)}, { useFindAndModify: false })
                     .then(datac => {
                       res.send(datac);
                     }).catch(err =>{res.status(500).send({message:err.message}); });
                 }).catch(err =>{res.status(500).send({message:err.message}); });
             }).catch(err =>{res.status(500).send({message:err.message}); });
+          })
         }
         
       })

@@ -431,6 +431,7 @@ function ProductsCare() {
           description: "Template Product",
           listprice: 1,
           qoh: 0,
+          cost: 0,
           isStock: true,
           image: "default.png",
           category: prodcat._id,

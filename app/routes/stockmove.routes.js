@@ -12,5 +12,8 @@ module.exports = app => {
   // Retrieve a single
   routerSM.get("/:id", stockmoves.findOne);
 
+  // Retrieve a single
+  routerSM.get("/prod/:product", stockmoves.findByDesc);
+
   app.use("/api/stockmoves", routerSM);
 };
