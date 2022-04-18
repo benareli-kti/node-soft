@@ -485,6 +485,7 @@ exports.findAllActiveStock = (req, res) => {
   Product.find({ active: true, isStock: true })
     .populate({ path: 'category', model: ProductCat })
     .populate({ path: 'brand', model: Brand })
+    .populate({ path: 'taxout', model: Tax })
     .then(data => {
       res.send(data);
     })

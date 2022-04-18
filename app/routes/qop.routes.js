@@ -12,6 +12,9 @@ module.exports = app => {
   // Retrieve a single
   routerQop.get("/id/:id", qops.findOne);
   
+  // Retrieve a single
+  routerQop.get("/prod/:product/:warehouse", qops.findByProduct);
+  
   // Update with id
   routerQop.post("/cu", qops.createUpdate);
 

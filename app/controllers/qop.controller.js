@@ -172,8 +172,7 @@ exports.findOne = (req, res) => {
 
 // Find a single with an desc
 exports.findByProduct = (req, res) => {
-
-  Qop.find({product: req.query.product})
+  Qop.find({product: req.params.product,warehouse: req.params.warehouse})
     .populate({ path: 'partner', model: Partner })
     .populate({ path: 'warehouse', model: Warehouse })
     .then(data => {
