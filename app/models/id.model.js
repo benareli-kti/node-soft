@@ -4,6 +4,7 @@ module.exports = mongoose => {
       pos_id: Number,
       pos_session: Number,
       transfer_id: Number,
+      pay_id: Number,
       journal_id: Number,
     },
     { timestamps: true }

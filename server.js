@@ -261,7 +261,8 @@ function initial() {
       var ids = new Ids({
         pos_id: 1,
         pos_session: 1,
-        transfer_id: 1
+        transfer_id: 1,
+        pay_id: 1
       });
       ids.save(function(err){
         if (err) return console.error(err.stack)
@@ -317,13 +318,17 @@ function CoaCare() {
   c11111.save(function(err){if (err) return console.error(err.stack)});
   var c12001 = new Coa({prefix: 1,code: "1-2001",name: "Piutang",active: true});
   c12001.save(function(err){if (err) return console.error(err.stack)});
-  var c13001 = new Coa({prefix: 1,code: "1-3001",name: "PPN Masukan",active: true});
+  var c12901 = new Coa({prefix: 1,code: "1-2901",name: "PPN Masukan",active: true});
+  c12901.save(function(err){if (err) return console.error(err.stack)});
+  var c13001 = new Coa({prefix: 1,code: "1-3001",name: "Persediaan",active: true});
   c13001.save(function(err){if (err) return console.error(err.stack)});
+  var c13901 = new Coa({prefix: 1,code: "1-3901",name: "Persediaan Transit",active: true});
+  c13901.save(function(err){if (err) return console.error(err.stack)});
   var c15001 = new Coa({prefix: 1,code: "1-5001",name: "Aktiva Tetap",active: true});
   c15001.save(function(err){if (err) return console.error(err.stack)});
   var c21001 = new Coa({prefix: 2,code: "2-1001",name: "Hutang Dagang",active: true});
   c21001.save(function(err){if (err) return console.error(err.stack)});
-  var c22001 = new Coa({prefix: 2,code: "2-1001",name: "Hutang Lainnya",active: true});
+  var c22001 = new Coa({prefix: 2,code: "2-2001",name: "Hutang Lainnya",active: true});
   c22001.save(function(err){if (err) return console.error(err.stack)});
   var c23001 = new Coa({prefix: 2,code: "2-3001",name: "PPN Keluaran",active: true});
   c23001.save(function(err){if (err) return console.error(err.stack)});
@@ -346,11 +351,11 @@ function CoaCare() {
 
 function WarehouseCare() {
   var warehouse = new Warehouse({
-        name: "Gudang Utama",
-        short: "UTAMA",
-        main: true,
-        active: true
-      });
+    name: "Gudang Utama",
+    short: "UTAMA",
+    main: true,
+    active: true
+  });
   warehouse.save(function(err){
     if (err) return console.error(err.stack)
     console.log("added 'Gudang Utama' to warehouse collection");

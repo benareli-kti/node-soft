@@ -65,9 +65,9 @@ exports.create = (req, res) => {
           const poss1 = Possession.findOneAndUpdate({_id:req.body.session}, 
             {$push: {pos: dataa._id}}, { useFindAndModify: false })
               .then(datab => {
-                //res.send(datab);
-              });
-          });
+                res.send(datab);
+              }).catch(err =>{res.status(500).send({message:err.message}); });
+          }).catch(err =>{res.status(500).send({message:err.message}); });
       }else{
         res.send(dataa);
       }

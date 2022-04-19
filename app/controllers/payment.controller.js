@@ -13,6 +13,7 @@ exports.create = (req, res) => {
   }
   if(req.body.payment2!="null"){
     const posdetail = ({
+      pay_id: req.body.pay_id,
       order_id: req.body.order_id,
       amount_total: req.body.amount_total,
       payment1: req.body.payment1,
@@ -40,6 +41,7 @@ exports.create = (req, res) => {
     });
   }else if(req.body.payment2=="null"){
     const posdetail = ({
+      pay_id: req.body.pay_id,
       order_id: req.body.order_id,
       amount_total: req.body.amount_total,
       payment1: req.body.payment1,

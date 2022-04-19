@@ -1,6 +1,7 @@
 module.exports = mongoose => {
   var schema = mongoose.Schema(
     {
+      trans_id: String,
       qin: Number,
       qout: Number,
       cost: Number,

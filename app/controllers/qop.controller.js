@@ -47,8 +47,9 @@ exports.createUpdate = (req, res) => {
               .then(datab => {
                 const prod2 = Product.find({_id:req.body.product})
                   .then(datac => {
-                    var x = datac[0].qoh;
-                    const prod3 = Product.updateOne({_id:req.body.product},{qoh:x + Number(req.body.qop)})
+                    var x = datac[0].qoh + req.body.qop;
+                    var y = ((datac[0].qoh * datac[0].cost) + (req.body.qop * req.body.cost)) / x
+                    const prod3 = Product.updateOne({_id:req.body.product},{qoh:x,cost:y})
                       .then(datad => {
                         res.send(datad);
                       }).catch(err =>{res.status(500).send({message:err.message}); });
@@ -65,8 +66,9 @@ exports.createUpdate = (req, res) => {
             .then(dataa => {
               const prod1 = Product.find({_id:req.body.product})
                 .then(datab => {
-                  var x = datab[0].qoh;
-                  const prod2 = Product.findOneAndUpdate({_id:req.body.product},{qoh:x+Number(req.body.qop)}, { useFindAndModify: false })
+                  var x = datab[0].qoh + req.body.qop;
+                  var y = ((datab[0].qoh * datab[0].cost) + (req.body.qop * req.body.cost)) / x
+                  const prod3 = Product.updateOne({_id:req.body.product},{qoh:x,cost:y})
                     .then(datac => {
                       res.send(datac);
                     }).catch(err =>{res.status(500).send({message:err.message}); });
@@ -93,8 +95,9 @@ exports.createUpdate = (req, res) => {
               .then(datab => {
                 const prod2 = Product.find({_id:req.body.product})
                   .then(datac => {
-                    var x = datac[0].qoh;
-                    const prod3 = Product.updateOne({_id:req.body.product},{qoh:x + Number(req.body.qop)}, { useFindAndModify: false })
+                    var x = datac[0].qoh + req.body.qop;
+                    var y = ((datac[0].qoh * datac[0].cost) + (req.body.qop * req.body.cost)) / x
+                    const prod3 = Product.updateOne({_id:req.body.product},{qoh:x,cost:y})
                       .then(datad => {
                         res.send(datad);
                       }).catch(err =>{res.status(500).send({message:err.message}); });
@@ -111,8 +114,9 @@ exports.createUpdate = (req, res) => {
             .then(dataa => {
               const prod1 = Product.find({_id:req.body.product})
                 .then(datab => {
-                  var x = datab[0].qoh;
-                  const prod2 = Product.findOneAndUpdate({_id:req.body.product},{qoh:x+Number(req.body.qop)}, { useFindAndModify: false })
+                  var x = datab[0].qoh + req.body.qop;
+                  var y = ((datab[0].qoh * datab[0].cost) + (req.body.qop * req.body.cost)) / x
+                  const prod3 = Product.updateOne({_id:req.body.product},{qoh:x,cost:y})
                     .then(datac => {
                       res.send(datac);
                     }).catch(err =>{res.status(500).send({message:err.message}); });

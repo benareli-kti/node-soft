@@ -17,6 +17,7 @@ exports.create = (req, res) => {
   // Create
   if(req.body.partner != "null"){
     const stockmove = new Stockmove({
+      trans_id: req.body.trans_id,
       user: mongoose.Types.ObjectId(req.body.user),
       product: mongoose.Types.ObjectId(req.body.product),
       partner: mongoose.Types.ObjectId(req.body.partner),
@@ -48,6 +49,7 @@ exports.create = (req, res) => {
   }
   if(req.body.partner == "null"){
     const stockmove = new Stockmove({
+      trans_id: req.body.trans_id,
       user: mongoose.Types.ObjectId(req.body.user),
       product: mongoose.Types.ObjectId(req.body.product),
       warehouse: mongoose.Types.ObjectId(req.body.warehouse),

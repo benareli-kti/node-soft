@@ -12,6 +12,7 @@ exports.create = (req, res) => {
     res.status(400).send({ message: "Content can not be empty!" });
     return;
   }
+  console.log(req.body.partner);
   if(req.body.isStock=="true"){
     const posdetail = ({
       order_id: req.body.order_id,
@@ -25,31 +26,38 @@ exports.create = (req, res) => {
     Posdetail.create(posdetail).then(dataa => { 
       const pos1 = Pos.findOneAndUpdate({_id:req.body.ids}, {$push: {pos_detail: dataa._id}}, { useFindAndModify: false })
         .then(datab => { 
-          const qof1 = ({qof: 0-Number(req.body.qty), product: req.body.product, warehouse: req.body.warehouse});
+          if(req.body.partner=="null" || !req.body.partner){
+            const qof1 = ({qof: 0-Number(req.body.qty), product: req.body.product, warehouse: req.body.warehouse});
             Qof.create(qof1).then(datac => {
-              if(req.body.partner=="null"){
-                const stockmove = ({
-                  user: req.body.user,
-                  product: req.body.product,
-                  warehouse: req.body.warehouse,
-                  qout: req.body.qty
+              const stockmove = ({
+                trans_id: req.body.order_id,
+                user: req.body.user,
+                product: req.body.product,
+                warehouse: req.body.warehouse,
+                qout: req.body.qty
+              });
+              Stockmove.create(stockmove).then(datad => {res.send(datad);}).catch(err => {res.status(500).send({message:
+                err.message || "Some error occurred while creating the Data."});
                 });
-                Stockmove.create(stockmove).then(datad => {res.send(datad);}).catch(err => {res.status(500).send({message:
-                  err.message || "Some error occurred while creating the Data."});
-                  });
-              }else if(req.body.partner!="null"){
-                const stockmove = ({
-                  user: req.body.user,
-                  product: req.body.product,
-                  partner: req.body.partner,
-                  warehouse: req.body.warehouse,
-                  qout: req.body.qty
-                });
-                Stockmove.create(stockmove).then(datad => {res.send(datad);}).catch(err => {res.status(500).send({message:
-                  err.message || "Some error occurred while creating the Data."});
-                  });
-              }
             });
+          }else if(req.body.partner!="null"){
+            const qof1 = ({qof: 0-Number(req.body.qty), product: req.body.product, 
+              partner: req.body.partner, warehouse: req.body.warehouse});
+            Qof.create(qof1).then(datac => {
+              const stockmove = ({
+                trans_id: req.body.order_id,
+                user: req.body.user,
+                product: req.body.product,
+                partner: req.body.partner,
+                warehouse: req.body.warehouse,
+                qout: req.body.qty
+              });
+              Stockmove.create(stockmove).then(datad => {res.send(datad);}).catch(err => {res.status(500).send({message:
+                err.message || "Some error occurred while creating the Data."});
+                });
+            });
+          }
+            
         });
     });
   }else if(req.body.isStock=="false"){

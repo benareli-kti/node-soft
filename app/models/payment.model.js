@@ -1,6 +1,7 @@
 module.exports = mongoose => {
   var schema = mongoose.Schema(
     {
+      pay_id: String,
       order_id: String,
       amount_total: Number,
       payment1: Number,

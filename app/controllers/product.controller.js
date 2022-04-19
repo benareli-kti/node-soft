@@ -240,6 +240,8 @@ exports.findOne = (req, res) => {
   Product.findById(id)
     .populate({ path: 'category', model: ProductCat })
     .populate({ path: 'brand', model: Brand })
+    .populate({ path: 'taxin', model: Tax })
+    .populate({ path: 'taxout', model: Tax })
     .populate({ path: 'supplier', model: Partner })
     .then(data => {
       if (!data)
