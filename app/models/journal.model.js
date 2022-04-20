@@ -7,8 +7,7 @@ module.exports = mongoose => {
         ref: "Partner"}
       ],
       amount: Number,
-      date: String,
-      transaction: String
+      date: String
     },
     { timestamps: true }
   );

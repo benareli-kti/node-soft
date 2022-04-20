@@ -1,6 +1,7 @@
 module.exports = mongoose => {
   var schema = mongoose.Schema(
     {
+      journal_id: String,
       debit_acc: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Coa"
