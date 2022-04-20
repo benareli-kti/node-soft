@@ -11,7 +11,8 @@ module.exports = mongoose => {
         ref: "Coa"
       },
       debit: Number,
-      credit: Number
+      credit: Number,
+      label: String
     },
     { timestamps: true }
   );

@@ -1,9 +1,15 @@
 const db = require("../models");
 const Pos = db.poss;
 const Posdetail = db.posdetails;
-const Qof = db.qofs;
 const Stockmove = db.stockmoves;
+const Product = db.products;
+const Qop = db.qops;
+const Qof = db.qofs;
+const Coa = db.coas;
+const Journal = db.journals;
+const Entry = db.entrys;
 const mongoose = require("mongoose");
+var cost = 0;
 
 // Create and Save new
 exports.create = (req, res) => {
@@ -12,7 +18,7 @@ exports.create = (req, res) => {
     res.status(400).send({ message: "Content can not be empty!" });
     return;
   }
-  console.log(req.body.partner);
+
   if(req.body.isStock=="true"){
     const posdetail = ({
       order_id: req.body.order_id,
@@ -36,9 +42,11 @@ exports.create = (req, res) => {
                 warehouse: req.body.warehouse,
                 qout: req.body.qty
               });
-              Stockmove.create(stockmove).then(datad => {res.send(datad);}).catch(err => {res.status(500).send({message:
-                err.message || "Some error occurred while creating the Data."});
-                });
+              Stockmove.create(stockmove).then(datad => {
+                  findCost(req.body, res);
+                  //res.send(datad);
+                }).catch(err => {res.status(500).send({message:err.message});
+              });
             });
           }else if(req.body.partner!="null"){
             const qof1 = ({qof: 0-Number(req.body.qty), product: req.body.product, 
@@ -52,9 +60,11 @@ exports.create = (req, res) => {
                 warehouse: req.body.warehouse,
                 qout: req.body.qty
               });
-              Stockmove.create(stockmove).then(datad => {res.send(datad);}).catch(err => {res.status(500).send({message:
-                err.message || "Some error occurred while creating the Data."});
-                });
+              Stockmove.create(stockmove).then(datad => {
+                  findCost(req.body, res);
+                  //res.send(datad);
+                }).catch(err => {res.status(500).send({message:err.message});
+              });
             });
           }
             
@@ -78,6 +88,46 @@ exports.create = (req, res) => {
     });
   }
 };
+
+function findCost(req, res) {
+  if(req.meth){
+    Product.findById(req.product).then(data => {
+      cost = data.cost;
+      insertAcc(req, res);
+    })
+  }else{
+    Qop.findById(req.qop).then(data => {
+      cost = data.cost;
+      insertAcc(req, res);
+    })
+  }
+}
+
+function insertAcc(req, res) {
+  Product.findById(req.product).then(prod => {
+    let prodname = prod.name;
+    Coa.find().then(data => {
+      let o = data.findIndex((obj => obj.code == '1-2001'));
+      let p = data.findIndex((pbj => pbj.code == '5-1001'));
+      let oo = data[o]._id;
+      let pp = data[p]._id;
+      const ent1 = ({journal_id: req.trans_id, label: prodname,
+        debit_acc: pp, debit: cost})
+      Entry.create(ent1).then(dataa => {
+        const ent2 = ({journal_id: req.trans_id, label: prodname,
+          credit_acc: oo, credit: cost})
+        Entry.create(ent2).then(datab => {
+          Journal.updateOne({journal_id:req.order_id}, 
+              {$push: {entries: [dataa._id,datab._id]}})
+            .then(datac => {
+              o=null,p=null,oo=null,pp=null;
+              res.send(datac);
+          });
+        })
+      })
+    })
+  })
+}
 
 // Retrieve all from the database.
 exports.findAll = (req, res) => {

@@ -2,6 +2,9 @@ const db = require("../models");
 const Pos = db.poss;
 const Possession = db.possessions;
 const Payment = db.payments;
+const Coa = db.coas;
+const Journal = db.journals;
+const Entry = db.entrys;
 const mongoose = require("mongoose");
 
 // Create and Save new
@@ -32,11 +35,15 @@ exports.create = (req, res) => {
           const poss1 = Possession.findOneAndUpdate({_id:req.body.session}, 
             {$push: {payment: dataa._id}}, { useFindAndModify: false })
               .then(datab => {
-                res.send(datab);
+                console.log("1");
+                insertAcc(req.body, res);
+                //res.send(dataa);
               });
           });
       }else{
-        res.send(dataa);
+        console.log("2");
+        insertAcc(req.body, res);
+        //res.send(dataa);
       }
     });
   }else if(req.body.payment2=="null"){
@@ -57,15 +64,103 @@ exports.create = (req, res) => {
           const poss1 = Possession.findOneAndUpdate({_id:req.body.session}, 
             {$push: {payment: dataa._id}}, { useFindAndModify: false })
               .then(datab => {
-                res.send(datab);
+                console.log("3");
+                insertAcc(req.body, res);
+                //res.send(dataa);
               });
           });
       }else{
-        res.send(dataa);
+        console.log("4");
+        insertAcc(req.body, res);
+        //res.send(dataa);
       }
     });
   }
 };
+
+function insertAcc(req, res) {
+  Coa.find().then(data => {
+    let o = data.findIndex((obj => obj.code == '1-2001'));
+    let k = data.findIndex((kbj => kbj.code == '1-1001'));
+    let b = data.findIndex((bbj => bbj.code == '1-1101'));
+    let c = data.findIndex((cbj => cbj.code == '1-1111'));
+    let oo = data[o]._id;
+    var pp;
+    if(req.pay1method=="tunai") pp = data[k]._id;
+    else if(req.pay1method=="bank") pp = data[b]._id;
+    else if(req.pay1method=="cc") pp = data[c]._id;
+    const ent1 = ({journal_id: req.pay_id, label: req.pay1method,
+      debit_acc: pp, debit: req.amount_total})
+    Entry.create(ent1).then(dataa => {
+      const ent2 = ({journal_id: req.pay_id, label: req.order_id ,
+        credit_acc: oo, credit: req.amount_total})
+      Entry.create(ent2).then(datab => {
+        const journal = ({journal_id: req.pay_id, amount: req.payemnt1,
+            entries:[dataa._id, datab._id]})
+          Journal.create(journal).then(datac => {
+            if(req.payment2>0){
+              secondAcc(req,res,o,k,b,c);
+            }else if(req.change>0){
+              changeAcc(req,res,o,k,b,c);
+            }else{
+              o=null;k=null;b=null;c=null;oo=null;pp=null;
+              res.send(datac);
+            }
+        });
+      })
+    })
+  })
+}
+
+function secondAcc(req, res,o,k,b,c) {
+  Coa.find().then(data => {
+    let oo = data[o]._id;
+    var pp;
+    if(req.pay2method=="tunai") pp = data[k]._id;
+    else if(req.pay2method=="bank") pp = data[b]._id;
+    else if(req.pay2method=="cc") pp = data[c]._id;
+    const ent1 = ({journal_id: req.pay_id, label: req.pay2method,
+      debit_acc: pp, debit: req.payment2})
+    Entry.create(ent1).then(dataa => {
+      const ent2 = ({journal_id: req.pay_id, label: req.order_id ,
+        credit_acc: oo, credit: req.payment2})
+      Entry.create(ent2).then(datab => {
+        Journal.updateOne({journal_id:req.pay_id}, 
+            {$push: {entries: [dataa._id,datab._id]}})
+          .then(datac => {
+            if(req.change>0){
+              changeAcc(req,res,o,k,b,c);
+            }else{
+              o=null;k=null;b=null;c=null;oo=null;pp=null;
+              res.send(datac);
+            }
+        });
+      })
+    })
+  })
+}
+
+function changeAcc(req, res,o,k,b,c) {
+  Coa.find().then(data => {
+    let oo = data[o]._id;
+    var pp;
+    pp = data[k]._id;
+    const ent1 = ({journal_id: req.pay_id, label: "Change",
+      debit_acc: oo, debit: req.change})
+    Entry.create(ent1).then(dataa => {
+      const ent2 = ({journal_id: req.pay_id, label: req.order_id ,
+        credit_acc: pp, credit: req.change})
+      Entry.create(ent2).then(datab => {
+        Journal.updateOne({journal_id:req.pay_id}, 
+            {$push: {entries: [dataa._id,datab._id]}})
+          .then(datac => {
+            o=null;k=null;b=null;c=null;oo=null;pp=null;
+            res.send(datac);
+        });
+      })
+    })
+  })
+}
 
 // Retrieve all from the database.
 exports.findAll = (req, res) => {

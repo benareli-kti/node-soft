@@ -6,6 +6,9 @@ const Brand = db.brands;
 const Partner = db.partners;
 const Log = db.logs;
 const User = db.users;
+const Coa = db.coas;
+const Journal = db.journals;
+const Entry = db.entrys;
 const mongoose = require("mongoose");
 
 // Create and Save new
@@ -37,11 +40,13 @@ exports.create = (req, res) => {
           const poss1 = Possession.findOneAndUpdate({_id:req.body.session}, 
             {$push: {pos: dataa._id}}, { useFindAndModify: false })
               .then(datab => {
-                res.send(datab);
+                insertAcc(req.body, res);
+                //res.send(datab);
               });
           });
       }else{
-        res.send(dataa);
+        insertAcc(req.body, res);
+        //res.send(dataa);
       }
     });
   }
@@ -65,16 +70,55 @@ exports.create = (req, res) => {
           const poss1 = Possession.findOneAndUpdate({_id:req.body.session}, 
             {$push: {pos: dataa._id}}, { useFindAndModify: false })
               .then(datab => {
-                res.send(datab);
+                insertAcc(req.body, res);
+                //res.send(datab);
               }).catch(err =>{res.status(500).send({message:err.message}); });
           }).catch(err =>{res.status(500).send({message:err.message}); });
       }else{
-        res.send(dataa);
+        insertAcc(req.body, res);
+        //res.send(dataa);
       }
     });
   }
-
 };
+
+function insertAcc(req, res) {
+  Coa.find().then(data => {
+    let o = data.findIndex((obj => obj.code == '4-1001'));
+    let p = data.findIndex((pbj => pbj.code == '1-2001'));
+    let q = data.findIndex((qbj => qbj.code == '2-3001'));
+    let oo = data[o]._id;
+    let pp = data[p]._id;
+    let qq = data[q]._id;
+    const ent1 = ({journal_id: req.trans_id, label: req.order_id,
+      debit_acc: pp, debit: req.amount_total})
+    Entry.create(ent1).then(dataa => {
+      const ent2 = ({journal_id: req.trans_id, label: "Income + "+req.order_id,
+        credit_acc: oo, credit: req.amount_untaxed})
+      Entry.create(ent2).then(datab => {
+        const ent3 = ({journal_id: req.trans_id, label: "Tax",
+          credit_acc: qq, credit: req.amount_tax})
+        Entry.create(ent3).then(datac => {
+          if(req.amount_tax>0){
+            const journal = ({journal_id: req.order_id, amount: req.amount_total,
+              entries:[dataa._id, datab._id, datac._id]})
+            Journal.create(journal).then(datad => {
+              o=null;p=null;q=null;oo=null;pp=null;qq=null;
+              res.send(datad);
+            })
+          }else{
+            const journal = ({journal_id: req.order_id, amount: req.amount_total,
+              entries:[dataa._id, datab._id]})
+            Journal.create(journal).then(datad => {
+              o=null;p=null;q=null;oo=null;pp=null;qq=null;
+              res.send(datad);
+            })
+          }
+        })
+      })
+    })
+  })
+}
 
 // Retrieve all from the database.
 exports.findAll = (req, res) => {

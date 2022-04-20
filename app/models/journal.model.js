@@ -4,7 +4,7 @@ module.exports = mongoose => {
       journal_id: String,
       entries:[
         {type: mongoose.Schema.Types.ObjectId,
-        ref: "Partner"}
+        ref: "Entry"}
       ],
       amount: Number,
       date: String

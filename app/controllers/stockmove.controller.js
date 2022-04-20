@@ -13,11 +13,11 @@ const Ids = db.ids;
 // Create and Save new
 exports.create = (req, res) => {
   // Validate request
-  /*if (!req.body.product) {
+  if (!req.body.product) {
     res.status(400).send({ message: "Content can not be empty!" });
     return;
-  }*/
-  console.log(req.body);  
+  }
+
   // Create
   if(req.body.partner != "null"){
     const stockmove = ({
@@ -32,9 +32,9 @@ exports.create = (req, res) => {
     /*Old Price * Quantity valued at Old Price) + 
     (Quantity received in last shipment * Price of the product in last shipment)) / 
     (Quantity valued at old price + quantity received in last shipment*/
+    
     Stockmove.create(stockmove).then(data => {
-      insertAcc(req.body, res);
-      //res.send(data);
+        insertAcc(req.body, res);
       }).catch(err => {res.status(500).send({message:err.message});
     });
   }
@@ -48,31 +48,56 @@ exports.create = (req, res) => {
       qout: req.body.qout
     });
     Stockmove.create(stockmove).then(data => {
-      insertAcc(req.body, res);
-      //res.send(data);
+        insertAcc(req.body, res);
       }).catch(err => {res.status(500).send({message:err.message});
     });
   }
 };
 
 function insertAcc(req, res) {
+  Product.findById(req.product).then(prod => {
+    let prodname = prod.name;
   Coa.find().then(data => {
-    if(req.qin && !req.qout){
+    if((req.qin && !req.qout) || (req.qin && req.qout == 0)){
       let o = data.findIndex((obj => obj.code == '1-3901'));
       let p = data.findIndex((pbj => pbj.code == '1-3001'));
       let oo = data[o]._id;
       let pp = data[p]._id;
-      const journal = ({journal_id: req.trans_id, amount: req.qin * req.cost})
-      Journal.create(journal).then(dataa => {
-        const ent1 = ({journal_id: req.trans_id, debit_acc: pp, debit: req.qin * req.cost})
-        Entry.create(ent1).then(datab => {
-          const ent2 = ({journal_id: req.trans_id, credit_acc: oo, credit: req.qin * req.cost})
-          Entry.create(ent2).then(datac => {
+      const ent1 = ({journal_id: req.trans_id, label: prodname,
+        debit_acc: oo, debit: req.qin * req.cost})
+      Entry.create(ent1).then(dataa => {
+        const ent2 = ({journal_id: req.trans_id, label: prodname,
+          credit_acc: pp, credit: req.qin * req.cost})
+        Entry.create(ent2).then(datab => {
+          const journal = ({journal_id: req.trans_id, 
+            amount: req.qin * req.cost, entries:[dataa._id, datab._id]})
+          Journal.create(journal).then(datac => {
+            o=null;p=null;oo=null;pp=null;prodname=null;
+            res.send(dataa);
+          })
+        })
+      })
+    }else if((req.qout && !req.qin) || (req.qout && req.qin == 0)){
+      let o = data.findIndex((obj => obj.code == '1-3901'));
+      let p = data.findIndex((pbj => pbj.code == '1-3001'));
+      let oo = data[o]._id;
+      let pp = data[p]._id;
+      const ent1 = ({journal_id: req.trans_id, label: prodname,
+        debit_acc: oo, debit: req.qout * req.cost})
+      Entry.create(ent1).then(dataa => {
+        const ent2 = ({journal_id: req.trans_id, label: prodname,
+          credit_acc: pp, credit: req.qout * req.cost})
+        Entry.create(ent2).then(datab => {
+          const journal = ({journal_id: req.trans_id, 
+            amount: req.qout * req.cost, entries:[dataa._id, datab._id]})
+          Journal.create(journal).then(datac => {
+            o=null;p=null;oo=null;pp=null;prodname=null;
             res.send(dataa);
           })
         })
       })
     }
+  })
   })
 }
 

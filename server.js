@@ -90,9 +90,7 @@ app.listen(PORT, () => {
 
 cron.schedule('00 17 * * *', function() {
   console.log('Running stock calculation');
-  Setting.find().then(set => {
-    if(!set[0].cost_general) checkQof();
-  });
+  checkQof();
 });
 
 //AI FUCK
