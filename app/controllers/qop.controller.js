@@ -137,11 +137,11 @@ exports.createUpdate = (req, res) => {
 
 // Retrieve all from the database.
 exports.findAll = (req, res) => {
-  const product = req.query.product;
+  /*const product = req.query.product;
   var condition = product ? { product: { $regex: new RegExp(product), $options: "i" } } : {};
-  var o_id = mongoose.Types.ObjectId(req.query.product);
+  var o_id = mongoose.Types.ObjectId(req.query.product);*/
 
-  Qop.find({product: o_id})
+  Qop.find({product: req.query.product})
     .populate({ path: 'partner', model: Partner })
     .populate({ path: 'warehouse', model: Warehouse })
     .then(data => {

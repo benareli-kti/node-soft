@@ -88,7 +88,8 @@ app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
 
-cron.schedule('00 17 * * *', function() {
+//cron schedule
+cron.schedule('00 10 * * *', function() {
   console.log('Running stock calculation');
   checkQof();
 });
@@ -97,7 +98,7 @@ cron.schedule('00 17 * * *', function() {
 function checkQof() {
   const find1 = Qof.find()
     .then(res => {
-      if(res){
+      if(res.length>0){
         if(res[0].partner){
           withPartner(res[0].product, res[0].partner, res[0].warehouse);
         }else{
