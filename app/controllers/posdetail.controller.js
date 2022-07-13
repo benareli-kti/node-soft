@@ -3,6 +3,7 @@ const Pos = db.poss;
 const Posdetail = db.posdetails;
 const Stockmove = db.stockmoves;
 const Product = db.products;
+const Uom = db.uoms;
 const Qop = db.qops;
 const Qof = db.qofs;
 const Coa = db.coas;
@@ -18,11 +19,11 @@ exports.create = (req, res) => {
     res.status(400).send({ message: "Content can not be empty!" });
     return;
   }
-
   if(req.body.isStock=="true"){
     const posdetail = ({
       order_id: req.body.order_id,
       qty: req.body.qty,
+      uom: req.body.suom,
       price_unit: req.body.price_unit,
       tax: req.body.tax,
       subtotal: req.body.subtotal,
@@ -40,7 +41,8 @@ exports.create = (req, res) => {
                 user: req.body.user,
                 product: req.body.product,
                 warehouse: req.body.warehouse,
-                qout: req.body.qty
+                qout: req.body.qty,
+                uom: req.body.suom
               });
               Stockmove.create(stockmove).then(datad => {
                   findCost(req.body, res);
@@ -58,7 +60,8 @@ exports.create = (req, res) => {
                 product: req.body.product,
                 partner: req.body.partner,
                 warehouse: req.body.warehouse,
-                qout: req.body.qty
+                qout: req.body.qty,
+                uom: req.body.suom
               });
               Stockmove.create(stockmove).then(datad => {
                   findCost(req.body, res);
@@ -74,6 +77,7 @@ exports.create = (req, res) => {
     const posdetail = ({
       order_id: req.body.order_id,
       qty: req.body.qty,
+      uom: req.body.suom,
       price_unit: req.body.price_unit,
       tax: req.body.tax,
       subtotal: req.body.subtotal,
@@ -137,6 +141,7 @@ exports.findAll = (req, res) => {
   Posdetail.find(condition)
     .populate({ path: 'product', model: Product })
     .populate({ path: 'warehouse', model: Warehouse })
+    .populate({ path: 'uom', model: Uom })
     .then(data => {
       res.send(data);
     })
@@ -155,6 +160,7 @@ exports.findOne = (req, res) => {
   Posdetail.findById(id)
     .populate({ path: 'product', model: Product })
     .populate({ path: 'warehouse', model: Warehouse })
+    .populate({ path: 'uom', model: Uom })
     .then(data => {
       if (!data)
         res.status(404).send({ message: "Not found Data with id " + id });
@@ -175,6 +181,7 @@ exports.findByDesc = (req, res) => {
   Posdetail.find(condition)
     .populate({ path: 'product', model: Product })
     .populate({ path: 'warehouse', model: Warehouse })
+    .populate({ path: 'uom', model: Uom })
     .then(data => {
       res.send(data);
     })

@@ -14,6 +14,14 @@ module.exports = mongoose => {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Product"
       },
+      uom_cat: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Uomcat"
+      },
+      uom: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Uom"
+      },
       partner: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Partner"

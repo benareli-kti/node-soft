@@ -4,6 +4,8 @@ const cors = require("cors");
 const dbConfig = require("./app/config/db.config");
 const baseurl = require("./app/config/url.config");
 const cron = require('node-cron');
+const helmet = require('helmet');
+const morgan = require('morgan');
 const app = express();
 
 var corsOptions = {
@@ -12,6 +14,8 @@ var corsOptions = {
 
 global.__basedir = __dirname;
 
+app.use(helmet());
+app.use(morgan('combined'));
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -32,11 +36,15 @@ const Store = db.stores;
 const ProductCat = db.productcats;
 const Partner = db.partners;
 const Product = db.products;
+const Uomcat = db.uomcats;
+const Uom = db.uoms;
 const Stockmove = db.stockmoves;
 const Qof = db.qofs;
 const Qop = db.qops;
 const Coa = db.coas;
 const Tax = db.taxs;
+
+var uomid;
 
 db.mongoose
   .connect(`mongodb://${dbConfig.HOST}:${dbConfig.PORT}/${dbConfig.DB}`, {
@@ -67,6 +75,8 @@ require("./app/routes/userrole.routes")(app);
 require("./app/routes/tax.routes")(app);
 require("./app/routes/product.routes")(app);
 require("./app/routes/productcat.routes")(app);
+require("./app/routes/uomcat.routes")(app);
+require("./app/routes/uom.routes")(app);
 require("./app/routes/brand.routes")(app);
 require("./app/routes/warehouse.routes")(app);
 require("./app/routes/store.routes")(app);
@@ -274,7 +284,8 @@ function initial() {
         comp_addr: "",
         comp_phone: "",
         comp_email: "",
-        pos_shift: false
+        pos_shift: false,
+        retail: true,
       });
       settings.save(function(err){
         if (err) return console.error(err.stack)
@@ -298,6 +309,12 @@ function initial() {
   Partner.estimatedDocumentCount((err, count) => {
     if (!err && count === 0) {
       PartnerCare();
+    }
+  });
+
+  Uomcat.estimatedDocumentCount((err, count) => {
+    if (!err && count === 0) {
+      UOM();
     }
   });
 
@@ -359,7 +376,7 @@ function WarehouseCare() {
     if (err) return console.error(err.stack)
     console.log("added 'Gudang Utama' to warehouse collection");
     var logWH = new Log({
-        message: "added by system",
+        message: "dibuat oleh sistem",
         warehouse: warehouse._id
     });
     logWH.save(function(err){
@@ -374,7 +391,7 @@ function WarehouseCare() {
           if (err) return console.error(err.stack)
           console.log("addes 'Soft Solution' to store collection");
           var logStore = new Log({
-            message: "added by system",
+            message: "dibuat oleh sistem",
             store: store._id
           })
           logStore.save(function(err){
@@ -388,17 +405,17 @@ function WarehouseCare() {
 
 function PartnerCare() {
   var partner = new Partner({
-        code: "TEMP",
-        name: "Template",
-        isCustomer: true,
-        isSupplier: true,
-        active: true
-      });
+    code: "TEMP",
+    name: "Template",
+    isCustomer: true,
+    isSupplier: true,
+    active: true
+  });
   partner.save(function(err){
     if (err) return console.error(err.stack)
     console.log("added 'Partner' to partner collection");
     var logPT = new Log({
-        message: "added by system",
+        message: "dibuat oleh sistem",
         partner: partner._id
     });
     logPT.save(function(err){
@@ -406,6 +423,161 @@ function PartnerCare() {
         console.log("Log is added");
     });
   });
+}
+
+function UOM() {
+  var uomcats = new Uomcat({
+    uom_cat: "Unit"
+  })
+  uomcats.save(function(err){
+    if (err) return console.error(err.stack)
+    console.log("added 'Unit' to UOM category collection");
+    var logUC = new Log({
+      message: "dibuat oleh sistem",
+      uom_cat: uomcats._id
+    });
+    logUC.save(function(err){
+      if(err) return console.error(err.stack)
+      console.log("Log is added")
+    });
+    var uoms = new Uom({
+      uom_name: "Pcs",
+      uom_cat: uomcats._id,
+      ratio: 1
+    })
+    uoms.save(function(err){
+      if (err) return console.error(err.stack)
+      uomid = uoms._id;
+      console.log("added 'Pcs' to UOM collection")
+    })
+    var logU1 = new Log({
+      message: "dibuat oleh sistem",
+      uom: uoms._id
+    });
+    logU1.save(function(err){
+      if(err) return console.error(err.stack)
+      console.log("Log is added")
+    });
+    var uom2 = new Uom({
+      uom_name: "Lusin",
+      uom_cat: uomcats._id,
+      ratio: 12
+    })
+    uom2.save(function(err){
+      if (err) return console.error(err.stack)
+      console.log("added 'Lusin' to UOM collection")
+    })
+    var logU2 = new Log({
+      message: "dibuat oleh sistem",
+      uom: uom2._id
+    });
+    logU2.save(function(err){
+      if(err) return console.error(err.stack)
+      console.log("Log is added")
+    });
+  })
+
+  var uomcats2 = new Uomcat({
+    uom_cat: "Berat"
+  })
+  uomcats2.save(function(err){
+    if (err) return console.error(err.stack)
+    console.log("added 'Berat' to UOM category collection");
+    var logUC2 = new Log({
+      message: "dibuat oleh sistem",
+      uom_cat: uomcats2._id
+    });
+    logUC2.save(function(err){
+      if(err) return console.error(err.stack)
+      console.log("Log is added")
+    });
+    var uom3 = new Uom({
+      uom_name: "kg",
+      uom_cat: uomcats2._id,
+      ratio: 1
+    })
+    uom3.save(function(err){
+      if (err) return console.error(err.stack)
+      //const uomid = uoms._id;
+      console.log("added 'kg' to UOM collection")
+    })
+    var logU3 = new Log({
+      message: "dibuat oleh sistem",
+      uom: uom3._id
+    });
+    logU3.save(function(err){
+      if(err) return console.error(err.stack)
+      console.log("Log is added")
+    });
+    var uom4 = new Uom({
+      uom_name: "gr",
+      uom_cat: uomcats2._id,
+      ratio: (1/1000)
+    })
+    uom4.save(function(err){
+      if (err) return console.error(err.stack)
+      console.log("added 'gr' to UOM collection")
+    })
+    var logU4 = new Log({
+      message: "dibuat oleh sistem",
+      uom: uom4._id
+    });
+    logU4.save(function(err){
+      if(err) return console.error(err.stack)
+      console.log("Log is added")
+    });
+  })
+
+  var uomcats3 = new Uomcat({
+    uom_cat: "Cair"
+  })
+  uomcats3.save(function(err){
+    if (err) return console.error(err.stack)
+    console.log("added 'Cair' to UOM category collection");
+    var logUC3 = new Log({
+      message: "dibuat oleh sistem",
+      uom_cat: uomcats3._id
+    });
+    logUC3.save(function(err){
+      if(err) return console.error(err.stack)
+      console.log("Log is added")
+    });
+    var uom5 = new Uom({
+      uom_name: "L",
+      uom_cat: uomcats3._id,
+      ratio: 1
+    })
+    uom5.save(function(err){
+      if (err) return console.error(err.stack)
+      //const uomid = uoms._id;
+      console.log("added 'L' to UOM collection")
+    })
+    var logU5 = new Log({
+      message: "dibuat oleh sistem",
+      uom: uom5._id
+    });
+    logU5.save(function(err){
+      if(err) return console.error(err.stack)
+      console.log("Log is added")
+    });
+    var uom6 = new Uom({
+      uom_name: "mL",
+      uom_cat: uomcats3._id,
+      ratio: (1/1000)
+    })
+    uom6.save(function(err){
+      if (err) return console.error(err.stack)
+      console.log("added 'mL' to UOM collection")
+    })
+    var logU6 = new Log({
+      message: "dibuat oleh sistem",
+      uom: uom6._id
+    });
+    logU6.save(function(err){
+      if(err) return console.error(err.stack)
+      console.log("Log is added")
+    });
+  })
 }
 
 function ProductsCare() {
@@ -425,7 +597,7 @@ function ProductsCare() {
       if (err) return console.error(err.stack)
       console.log("added 'Template' to product category collection");
       var logPC = new Log({
-        message: "added by system",
+        message: "dibuat oleh sistem",
         category: prodcat._id
       });
       logPC.save(function(err){
@@ -436,6 +608,8 @@ function ProductsCare() {
           name: "Template",
           description: "Template Product",
           listprice: 1,
+          suom: uomid,
+          puom: uomid,
           qoh: 0,
           cost: 0,
           isStock: true,
@@ -449,7 +623,7 @@ function ProductsCare() {
           if(err) return console.error(err.stack)
           console.log("Product is added");
           var logPR = new Log({
-            message: "added by system",
+            message: "dibuat oleh sistem",
             product: prod._id
           });
           logPR.save(function(err){

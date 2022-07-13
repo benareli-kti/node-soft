@@ -35,13 +35,11 @@ exports.create = (req, res) => {
           const poss1 = Possession.findOneAndUpdate({_id:req.body.session}, 
             {$push: {payment: dataa._id}}, { useFindAndModify: false })
               .then(datab => {
-                console.log("1");
                 insertAcc(req.body, res);
                 //res.send(dataa);
               });
           });
       }else{
-        console.log("2");
         insertAcc(req.body, res);
         //res.send(dataa);
       }
@@ -64,13 +62,11 @@ exports.create = (req, res) => {
           const poss1 = Possession.findOneAndUpdate({_id:req.body.session}, 
             {$push: {payment: dataa._id}}, { useFindAndModify: false })
               .then(datab => {
-                console.log("3");
                 insertAcc(req.body, res);
                 //res.send(dataa);
               });
           });
       }else{
-        console.log("4");
         insertAcc(req.body, res);
         //res.send(dataa);
       }

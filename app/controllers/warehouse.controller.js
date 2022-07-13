@@ -41,7 +41,7 @@ function startSequence(x, reqs, users, res){
       else{
         const wh = ({short: reqs[x].kode, name: reqs[x].nama, active: true});
         Warehouse.create(wh).then(dataa => {
-          const log = ({message: "dibuat", warehouse: dataa._id, user: users,});
+          const log = ({message: "upload", warehouse: dataa._id, user: users,});
           Log.create(log).then(datab => {
             sequencing(x, reqs, users, res);
           }).catch(err =>{res.status(500).send({message:err.message}); });

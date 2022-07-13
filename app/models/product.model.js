@@ -5,6 +5,8 @@ module.exports = mongoose => {
       name: String,
       description: String,
       barcode: String,
+      fg: Boolean,
+      rm: Boolean,
       listprice: Number,
       botprice: Number,
       cost: Number,
@@ -16,6 +18,14 @@ module.exports = mongoose => {
       category: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "ProductCat"
+      },
+      suom: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Uom"
+      },
+      puom: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Uom"
       },
       taxin: {
         type: mongoose.Schema.Types.ObjectId,

@@ -4,6 +4,7 @@ const Journal = db.journals;
 const Entry = db.entrys;
 const Product = db.products;
 const Partner = db.partners;
+const Uom = db.uoms;
 const Warehouse = db.warehouses;
 const User = db.users;
 const Coa = db.coas;
@@ -27,7 +28,8 @@ exports.create = (req, res) => {
       partner: req.body.partner,
       warehouse: req.body.warehouse,
       qin: req.body.qin,
-      qout: req.body.qout
+      qout: req.body.qout,
+      uom: req.body.uom
     });
     /*Old Price * Quantity valued at Old Price) + 
     (Quantity received in last shipment * Price of the product in last shipment)) / 
@@ -45,7 +47,8 @@ exports.create = (req, res) => {
       product: req.body.product,
       warehouse: req.body.warehouse,
       qin: req.body.qin,
-      qout: req.body.qout
+      qout: req.body.qout,
+      uom: req.body.uom
     });
     Stockmove.create(stockmove).then(data => {
         insertAcc(req.body, res);
@@ -111,6 +114,7 @@ exports.findAll = (req, res) => {
     .populate({ path: 'product', model: Product })
     .populate({ path: 'partner', model: Partner })
     .populate({ path: 'warehouse', model: Warehouse })
+    .populate({ path: 'uom', model: Uom })
     .then(data => {
       res.send(data);
     })
@@ -131,6 +135,7 @@ exports.findOne = (req, res) => {
     .populate({ path: 'product', model: Product })
     .populate({ path: 'partner', model: Partner })
     .populate({ path: 'warehouse', model: Warehouse })
+    .populate({ path: 'uom', model: Uom })
     .then(data => {
       if (!data)
         res.status(404).send({ message: "Not found Data with id " + id });

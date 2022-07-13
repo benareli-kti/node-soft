@@ -5,6 +5,10 @@ module.exports = mongoose => {
       qin: Number,
       qout: Number,
       cost: Number,
+      uom: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Uom"
+      },
       user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"

@@ -3,6 +3,10 @@ module.exports = mongoose => {
     {
       order_id: String,
       qty: Number,
+      uom: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Uom"
+      },
       price_unit: Number,
       discount: Number,
       tax: Number,

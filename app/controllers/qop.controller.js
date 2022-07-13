@@ -1,6 +1,7 @@
 const db = require("../models");
 const Qop = db.qops;
 const Product = db.products;
+const Uom = db.uoms;
 const Partner = db.partners;
 const Warehouse = db.warehouses;
 const mongoose = require("mongoose");
@@ -14,7 +15,8 @@ exports.create = (req, res) => {
     partner: mongoose.Types.ObjectId(req.body.partner),
     warehouse: mongoose.Types.ObjectId(req.body.warehouse),
     cost: req.body.cost,
-    qop: req.body.qop
+    qop: req.body.qop,
+    uom: req.body.uom
   });
 
   // Save in the database
@@ -40,7 +42,7 @@ exports.createUpdate = (req, res) => {
       .then(data => {
         if(!data.length){
           const qopp = ({product: req.body.product, partner: req.body.partner, warehouse: req.body.warehouse, 
-            cost: req.body.cost, qop: req.body.qop});
+            cost: req.body.cost, qop: req.body.qop, uom: req.body.uom});
           Qop.create(qopp).then(dataa => {
             var qopid = dataa._id;
             const prod1 = Product.findOneAndUpdate({_id:req.body.product}, {$push: {qop: dataa._id}}, { useFindAndModify: false })
@@ -88,7 +90,7 @@ exports.createUpdate = (req, res) => {
       .then(data => {
         if(!data.length){
           const qopp = ({product: req.body.product, warehouse: req.body.warehouse, 
-            cost: req.body.cost, qop: req.body.qop});
+            cost: req.body.cost, qop: req.body.qop, uom: req.body.uom});
           Qop.create(qopp).then(dataa => {
             var qopid = dataa._id;
             const prod1 = Product.findOneAndUpdate({_id:req.body.product}, {$push: {qop: dataa._id}}, { useFindAndModify: false })
@@ -144,6 +146,7 @@ exports.findAll = (req, res) => {
   Qop.find({product: req.query.product})
     .populate({ path: 'partner', model: Partner })
     .populate({ path: 'warehouse', model: Warehouse })
+    .populate({ path: 'uom', model: Uom })
     .then(data => {
       res.send(data);
     })
@@ -162,6 +165,7 @@ exports.findOne = (req, res) => {
   Qop.findById(id)
     .populate({ path: 'partner', model: Partner })
     .populate({ path: 'warehouse', model: Warehouse })
+    .populate({ path: 'uom', model: Uom })
     .then(data => {
       if (!data)
         res.status(404).send({ message: "Not found Data with id " + id });
@@ -179,6 +183,7 @@ exports.findByProduct = (req, res) => {
   Qop.find({product: req.params.product,warehouse: req.params.warehouse})
     .populate({ path: 'partner', model: Partner })
     .populate({ path: 'warehouse', model: Warehouse })
+    .populate({ path: 'uom', model: Uom })
     .then(data => {
       res.send(data);
     })

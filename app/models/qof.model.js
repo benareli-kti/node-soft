@@ -2,6 +2,10 @@ module.exports = mongoose => {
   var schema = mongoose.Schema(
     {
       qof: Number,
+      uom: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Uom"
+      },
       product: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Product"

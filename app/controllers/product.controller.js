@@ -3,6 +3,7 @@ const Product = db.products;
 const ProductCat = db.productcats;
 const Brand = db.brands;
 const Partner = db.partners;
+const Uom = db.uoms;
 const Log = db.logs;
 const User = db.users;
 const Tax = db.taxs;
@@ -11,6 +12,10 @@ const duplicate = [];
 const skipped = [];
 var Pcateg = '';
 var Pbrand = '';
+var Ptaxin = '';
+var Ptaxout = '';
+var Psuom = 'Pcs';
+var Ppuom = 'Pcs';
 
 // Create and Save new
 exports.create = (req, res) => {
@@ -28,7 +33,7 @@ exports.create = (req, res) => {
       barcode: req.body.barcode,
       listprice: req.body.listprice,
       botprice: req.body.botprice,
-      cost: req.body.cost,
+      cost: req.body.cost ? cost: 0,
       qoh: req.body.qoh,
       image: req.body.image,
       isStock: req.body.isStock ? req.body.isStock : false,
@@ -54,7 +59,9 @@ exports.create = (req, res) => {
       barcode: req.body.barcode,
       listprice: req.body.listprice,
       botprice: req.body.botprice,
-      cost: req.body.cost,
+      suom: req.body.suom,
+      puom: req.body.puom,
+      cost: req.body.cost ? cost: 0,
       qoh: req.body.qoh,
       image: req.body.image,
       isStock: req.body.isStock ? req.body.isStock : false,
@@ -80,7 +87,9 @@ exports.create = (req, res) => {
       barcode: req.body.barcode,
       listprice: req.body.listprice,
       botprice: req.body.botprice,
-      cost: req.body.cost,
+      suom: req.body.suom,
+      puom: req.body.puom,
+      cost: req.body.cost ? cost: 0,
       qoh: req.body.qoh,
       image: req.body.image,
       isStock: req.body.isStock ? req.body.isStock : false,
@@ -105,7 +114,9 @@ exports.create = (req, res) => {
       barcode: req.body.barcode,
       listprice: req.body.listprice,
       botprice: req.body.botprice,
-      cost: req.body.cost,
+      suom: req.body.suom,
+      puom: req.body.puom,
+      cost: req.body.cost ? cost: 0,
       qoh: req.body.qoh,
       image: req.body.image,
       isStock: req.body.isStock ? req.body.isStock : false,
@@ -158,18 +169,22 @@ function startSequence(x, reqs, users, res){
               if(!reqs[x].pajakkeluar) reqs[x].pajakkeluar = '1000';
               Tax.find({tax: Number(reqs[x].pajakkeluar)}).then(datad => {
                 if(datad) Ptaxout = datad[0]._id;
+                Uom.find({uom_name: reqs[x].satuan_jual}).then(datae => {
+                  if(datae) Psuom = datae[0]._id;
+                  Uom.find({uom_name: reqs[x].satuan_beli}).then(dataf => {
+                    if(dataf) Ppuom = dataf[0]._id;
                 
                 if(reqs[x].tipe=='barang'||reqs[x].tipe=='Barang'||reqs[x].tipe=="BARANG"){
                   const product = ({
                     sku:reqs[x].sku,name:reqs[x].nama,description:reqs[x].deskripsi,
                     barcode:reqs[x].barcode,listprice:reqs[x].hargajual,qoh:0,
-                    botprice:reqs[x].hargabatas,cost:reqs[x].hpp,image:"default.png",
+                    botprice:reqs[x].hargabatas,cost:reqs[x].hpp?cost:0,image:"default.png",
                     isStock:true,category:Pcateg,taxin:Ptaxin,taxout:Ptaxout,
                     brand:Pbrand,active:true,min:reqs[x].min,max:reqs[x].max,
-                    supplier:reqs[x].supplier
+                    supplier:reqs[x].supplier,suom:Psuom,puom:Ppuom
                   })
                   Product.create(product).then(datae => {
-                  const log = ({message: "dibuat", product: datae._id, user: users,});
+                  const log = ({message: "upload", product: datae._id, user: users,});
                     Log.create(log).then(dataf => {
                       sequencing(x, reqs, users, res);
                     }).catch(err =>{res.status(500).send({message:err.message}); });
@@ -178,19 +193,21 @@ function startSequence(x, reqs, users, res){
                   const product = ({
                     sku:reqs[x].sku,name:reqs[x].nama,description:reqs[x].deskripsi,
                     barcode:reqs[x].barcode,listprice:reqs[x].hargajual,qoh:0,
-                    botprice:reqs[x].hargabatas,cost:reqs[x].hpp,image:"default.png",
+                    botprice:reqs[x].hargabatas,cost:reqs[x].hpp?cost:0,image:"default.png",
                     isStock:false,category:Pcateg,taxin:Ptaxin,taxout:Ptaxout,
                     brand:Pbrand,active:true,min:reqs[x].min,max:reqs[x].max,
-                    supplier:reqs[x].supplier
+                    supplier:reqs[x].supplier,suom:Psuom,puom:Ppuom
                   })
                   Product.create(product).then(datae => {
-                  const log = ({message: "dibuat", product: datae._id, user: users,});
+                  const log = ({message: "upload", product: datae._id, user: users,});
                     Log.create(log).then(dataf => {
                       sequencing(x, reqs, users, res);
                     }).catch(err =>{res.status(500).send({message:err.message}); });
                   }).catch(err =>{res.status(500).send({message:err.message}); });
                 }
 
+                  }).catch(err =>{res.status(500).send({message:err.message}); });
+                }).catch(err =>{res.status(500).send({message:err.message}); });
               }).catch(err =>{res.status(500).send({message:err.message}); });
             }).catch(err =>{res.status(500).send({message:err.message}); });
           }).catch(err =>{res.status(500).send({message:err.message}); });
@@ -201,9 +218,9 @@ function startSequence(x, reqs, users, res){
   }else{
     if(duplicate.length>0||skipped.length>0){res.status(500).send(duplicate, skipped);
       duplicate.splice(0,duplicate.length);skipped.splice(0,skipped.length);
-      Pcateg = '';Pbrand = '';}
+      Pcateg='';Pbrand='';Ptaxin='';Ptaxout='';Psuom='';Ppuom='';}
     else {
-      Pcateg = '';Pbrand = '';
+      Pcateg='';Pbrand='';Ptaxin='';Ptaxout='';Psuom='';Ppuom='';
       res.status(200).send({message:"Semua data telah diinput!"});
     }
   }
@@ -222,6 +239,8 @@ exports.findAll = (req, res) => {
   Product.find(condition)
     .populate({ path: 'category', model: ProductCat })
     .populate({ path: 'brand', model: Brand })
+    .populate({ path: 'suom', model: Uom })
+    .populate({ path: 'puom', model: Uom })
     .then(data => {
       res.send(data);
     })
@@ -243,6 +262,8 @@ exports.findOne = (req, res) => {
     .populate({ path: 'taxin', model: Tax })
     .populate({ path: 'taxout', model: Tax })
     .populate({ path: 'supplier', model: Partner })
+    .populate({ path: 'suom', model: Uom })
+    .populate({ path: 'puom', model: Uom })
     .then(data => {
       if (!data)
         res.status(404).send({ message: "Not found Data with id " + id });
@@ -263,6 +284,8 @@ exports.findByDesc = (req, res) => {
   Product.find(condition)
     .populate({ path: 'category', model: ProductCat })
     .populate({ path: 'brand', model: Brand })
+    .populate({ path: 'suom', model: Uom })
+    .populate({ path: 'puom', model: Uom })
     .then(data => {
       res.send(data);
     })
@@ -292,6 +315,8 @@ exports.update = (req, res) => {
         description: req.body.description,
         listprice: req.body.listprice,
         botprice: req.body.botprice,
+        suom: req.body.suom,
+        puom: req.body.puom,
         cost: req.body.cost,
         image: req.body.image,
         isStock: req.body.isStock ? req.body.isStock : false,
@@ -326,6 +351,8 @@ exports.update = (req, res) => {
         description: req.body.description,
         listprice: req.body.listprice,
         botprice: req.body.botprice,
+        suom: req.body.suom,
+        puom: req.body.puom,
         cost: req.body.cost,
         image: req.body.image,
         isStock: req.body.isStock ? req.body.isStock : false,
@@ -360,6 +387,8 @@ exports.update = (req, res) => {
         description: req.body.description,
         listprice: req.body.listprice,
         botprice: req.body.botprice,
+        suom: req.body.suom,
+        puom: req.body.puom,
         cost: req.body.cost,
         image: req.body.image,
         isStock: req.body.isStock ? req.body.isStock : false,
@@ -455,6 +484,8 @@ exports.findAllActive = (req, res) => {
     .populate({ path: 'taxin', model: Tax })
     .populate({ path: 'taxout', model: Tax })
     .populate({ path: 'supplier', model: Partner })
+    .populate({ path: 'suom', model: Uom })
+    .populate({ path: 'puom', model: Uom })
     .then(data => {
       res.send(data);
     })
@@ -471,6 +502,8 @@ exports.findAllStock = (req, res) => {
   Product.find({ isStock: true })
     .populate({ path: 'category', model: ProductCat })
     .populate({ path: 'brand', model: Brand })
+    .populate({ path: 'suom', model: Uom })
+    .populate({ path: 'puom', model: Uom })
     .then(data => {
       res.send(data);
     })
@@ -488,6 +521,8 @@ exports.findAllActiveStock = (req, res) => {
     .populate({ path: 'category', model: ProductCat })
     .populate({ path: 'brand', model: Brand })
     .populate({ path: 'taxout', model: Tax })
+    .populate({ path: 'suom', model: Uom })
+    .populate({ path: 'puom', model: Uom })
     .then(data => {
       res.send(data);
     })

@@ -39,14 +39,14 @@ exports.createMany = (req, res) => {
 function startSequence(x, reqs, users, res){
   if(reqs[x]){
     Partner.find({name: reqs[x].nama}).then(data => {
-      if(data.length>0){console.log(data)}
+      if(data.length>0){}
       else{
         if((reqs[x].pelanggan=="ya"||reqs[x].pelanggan=="Ya"||reqs[x].pelanggan=="YA")
           &&(reqs[x].supplier=="ya"||reqs[x].supplier=="Ya"||reqs[x].supplier=="YA")){
           const partner = ({code: reqs[x].kode,name: reqs[x].nama,phone: reqs[x].phone,
             isCustomer: true,isSupplier: true,active: true});
           Partner.create(partner).then(dataa => {
-            const log = ({message: "dibuat", partner: dataa._id, user: users,});
+            const log = ({message: "upload", partner: dataa._id, user: users,});
             Log.create(log).then(datab => {
               sequencing(x, reqs, users, res);});
           });
@@ -55,7 +55,7 @@ function startSequence(x, reqs, users, res){
           const partner = ({code: reqs[x].kode,name: reqs[x].nama,phone: reqs[x].phone,
             isCustomer: false,isSupplier: true,active: true});
           Partner.create(partner).then(dataa => {
-            const log = ({message: "dibuat", partner: dataa._id, user: users,});
+            const log = ({message: "upload", partner: dataa._id, user: users,});
             Log.create(log).then(datab => {
               sequencing(x, reqs, users, res);});
           });
@@ -64,7 +64,7 @@ function startSequence(x, reqs, users, res){
           const partner = ({code: reqs[x].kode,name: reqs[x].nama,phone: reqs[x].phone,
             isCustomer: true,isSupplier: false,active: true});
           Partner.create(partner).then(dataa => {
-            const log = ({message: "dibuat", partner: dataa._id, user: users,});
+            const log = ({message: "upload", partner: dataa._id, user: users,});
             Log.create(log).then(datab => {
               sequencing(x, reqs, users, res);});
           });
@@ -72,7 +72,7 @@ function startSequence(x, reqs, users, res){
           const partner = ({code: reqs[x].kode,name: reqs[x].nama,phone: reqs[x].phone,
             isCustomer: false,isSupplier: false,active: true});
           Partner.create(partner).then(dataa => {
-            const log = ({message: "dibuat", partner: dataa._id, user: users,});
+            const log = ({message: "upload", partner: dataa._id, user: users,});
             Log.create(log).then(datab => {
               sequencing(x, reqs, users, res);});
           });

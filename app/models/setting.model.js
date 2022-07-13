@@ -6,6 +6,7 @@ module.exports = mongoose => {
       comp_addr: String,
       comp_phone: String,
       comp_email: String,
+      restaurant: Boolean,
       pos_shift: Boolean
     }
   );

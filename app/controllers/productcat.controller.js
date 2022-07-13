@@ -42,7 +42,7 @@ function startSequence(x, reqs, users, res){
       else{
         const prodcat = ({catid: reqs[x].id, description: reqs[x].nama, active: true});
         ProductCat.create(prodcat).then(dataa => {
-          const log = ({message: "dibuat", category: dataa._id, user: users,});
+          const log = ({message: "upload", category: dataa._id, user: users,});
           Log.create(log).then(datab => {
             sequencing(x, reqs, users, res);
           }).catch(err =>{res.status(500).send({message:err.message}); });

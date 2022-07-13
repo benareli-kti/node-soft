@@ -41,7 +41,7 @@ function startSequence(x, reqs, users, res){
       else{
         const brand = ({description: reqs[x].nama, active: true});
         Brand.create(brand).then(dataa => {
-          const log = ({message: "dibuat", brand: dataa._id, user: users,});
+          const log = ({message: "upload", brand: dataa._id, user: users,});
           Log.create(log).then(datab => {
             sequencing(x, reqs, users, res);
           }).catch(err =>{res.status(500).send({message:err.message}); });

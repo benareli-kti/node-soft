@@ -1,6 +1,7 @@
 const db = require("../models");
 const Qof = db.qofs;
 const Product = db.products;
+const Uom = db.uoms;
 const Partner = db.partners;
 const Warehouse = db.warehouses;
 const mongoose = require("mongoose");
@@ -19,7 +20,8 @@ exports.create = (req, res) => {
       product: mongoose.Types.ObjectId(req.body.product),
       partner: mongoose.Types.ObjectId(req.body.partner),
       warehouse: mongoose.Types.ObjectId(req.body.warehouse),
-      qof: req.body.qof
+      qof: req.body.qof,
+      uom: req.body.uom
     });
     qof.save(qof).then(data => {res.send(data);}).catch(err => {res.status(500).send({message:
           err.message || "Some error occurred while creating the Data."});
@@ -29,7 +31,8 @@ exports.create = (req, res) => {
     const qof = new Qof({
       product: mongoose.Types.ObjectId(req.body.product),
       warehouse: mongoose.Types.ObjectId(req.body.warehouse),
-      qof: req.body.qof
+      qof: req.body.qof,
+      uom: req.body.uom
     });
     qof.save(qof).then(data => {res.send(data);}).catch(err => {res.status(500).send({message:
           err.message || "Some error occurred while creating the Data."});
@@ -45,6 +48,7 @@ exports.findAll = (req, res) => {
   Qof.find(condition)
     .populate({ path: 'partner', model: Partner })
     .populate({ path: 'warehouse', model: Warehouse })
+    .populate({ path: 'uom', model: Uom })
     .then(data => {
       res.send(data);
     })
@@ -63,6 +67,7 @@ exports.findOne = (req, res) => {
   Qof.findById(id)
     .populate({ path: 'partner', model: Partner })
     .populate({ path: 'warehouse', model: Warehouse })
+    .populate({ path: 'uom', model: Uom })
     .then(data => {
       if (!data)
         res.status(404).send({ message: "Not found Data with id " + id });
@@ -83,6 +88,7 @@ exports.findByDesc = (req, res) => {
   Qof.find(condition)
     .populate({ path: 'partner', model: Partner })
     .populate({ path: 'warehouse', model: Warehouse })
+    .populate({ path: 'uom', model: Uom })
     .then(data => {
       res.send(data);
     })

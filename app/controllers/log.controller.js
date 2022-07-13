@@ -4,6 +4,8 @@ const Store = db.stores;
 const ProductCat = db.productcats;
 const Brand = db.brands;
 const Product = db.products;
+const Uomcat = db.uomcats;
+const Uom = db.uoms;
 const Partner = db.partners;
 const Warehouse = db.warehouses;
 const User = db.users;
@@ -41,6 +43,26 @@ exports.create = (req, res) => {
     const log = new Log({
       message: req.body.message,
       product: mongoose.Types.ObjectId(req.body.product),
+      user: mongoose.Types.ObjectId(req.body.user),
+    });
+    log.save(log).then(data => {res.send(data);}).catch(err => {res.status(500).send({message:
+          err.message || "Some error occurred while creating the Data."});
+    });
+  }
+  else if(req.body.uom_cat != "null"){
+    const log = new Log({
+      message: req.body.message,
+      uom_cat: mongoose.Types.ObjectId(req.body.uom_cat),
+      user: mongoose.Types.ObjectId(req.body.user),
+    });
+    log.save(log).then(data => {res.send(data);}).catch(err => {res.status(500).send({message:
+          err.message || "Some error occurred while creating the Data."});
+    });
+  }
+  else if(req.body.uom != "null"){
+    const log = new Log({
+      message: req.body.message,
+      uom: mongoose.Types.ObjectId(req.body.uom),
       user: mongoose.Types.ObjectId(req.body.user),
     });
     log.save(log).then(data => {res.send(data);}).catch(err => {res.status(500).send({message:
